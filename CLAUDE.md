@@ -74,7 +74,7 @@ reported with correct statistics, still counts as a result.
 ## 3b. Team, phases and git workflow
 
 **Team:** 3 people, each working with their own Claude Code agent. Everything lives in one shared remote git
-repo (URL: TBD, being created by Manas). **This file is the shared source of truth for all agents.**
+repo (https://github.com/Manas-Ganti/tml2026-finalproject). **This file is the shared source of truth for all agents.**
 
 ### Phases
 | Phase | What | Exit condition |
@@ -363,7 +363,7 @@ RL generator**.
   auditing their own work.
 
 ## 12. Open decisions (team)
-- Remote git URL (Manas creating). Add it here once it exists.
+- Remote repo: https://github.com/Manas-Ganti/tml2026-finalproject (SSH: git@github.com:Manas-Ganti/tml2026-finalproject.git).
 - Who takes owner role A / B / C (§3b). Paper writing is shared: each owner writes the methods and results
   for their own module.
 - ARC allocation account name (`<ALLOC>`), and whether teammates' accounts can spread disk and fair-share.
