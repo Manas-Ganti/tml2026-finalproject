@@ -1,0 +1,45 @@
+# Data, checkpoints and run outputs (live on ARC / HF Hub, never in git)
+data/
+ckpt/
+checkpoints/
+checkpoint-*/
+wandb/
+hf_cache/
+results/**/scores.jsonl
+results/**/*.pt
+*.safetensors
+*.bin
+*.arrow
+*.parquet
+
+# Secrets
+.env
+*.token
+hf_token*
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# SLURM logs
+slurm-*.out
+logs/
+
+# LaTeX build files
+paper/**/*.aux
+paper/**/*.log
+paper/**/*.out
+paper/**/*.bbl
+paper/**/*.blg
+paper/**/*.synctex.gz
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+.claude/settings.local.json
