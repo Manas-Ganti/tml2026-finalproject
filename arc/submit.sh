@@ -44,7 +44,7 @@ for kv in "$@"; do
   case "$kv" in *=*) EXPORTS="$EXPORTS,$kv" ;; *) echo "submit: expected KEY=VALUE, got '$kv'"; exit 2 ;; esac
 done
 
-name="$(basename "$SCRIPT" .slurm)"
+name="${JOB_NAME:-$(basename "$SCRIPT" .slurm)}"   # JOB_NAME lets arc/launch.py name jobs per run
 mkdir -p logs
 CMD=(sbatch --account=tml_2026 "${PROFILE[@]}" --time="$TIME" --signal=B:TERM@120
      --mail-type=END,FAIL --mail-user="$USER@vt.edu" --job-name="$name"
