@@ -5,7 +5,8 @@
 #   LR=1e-5 TRAIN_TIME=00:50:00 arc/run_mvr.sh            # submit
 #   DRY_RUN=1 LR=1e-5 arc/run_mvr.sh                      # print everything, submit nothing
 # Settings: BUNDLE (default mvr-v1), MODEL (default EleutherAI/pythia-160m), LR (required), SEED (0),
-#   DATA_TIME (01:15:00), TRAIN_TIME (00:50:00), AUDIT_TIME (00:45:00), SKIP_DATA=1 if corpora are already built.
+#   DATA_TIME (01:15:00), TRAIN_TIME (00:50:00), AUDIT_TIME (00:45:00), SKIP_DATA=1 if corpora are already built,
+#   DATA_JOB=<jobid> to chain onto a data job you already submitted (it may still be pending or running).
 set -euo pipefail
 [ -d .git ] || { echo "run_mvr: run from the repo root"; exit 2; }
 : "${LR:?set LR (from the canary-free LR check, docs/preregistration.md)}"
@@ -15,7 +16,10 @@ PY="${CANARY_PY:-/home/$USER/envs/canary-train/bin/python}"
 PIPES="none,substring-dedup,nfkc,paraphrase"
 
 [ -f data/corpus/base/manifest.json ] || { echo "run_mvr: build data/corpus/base first (see docs/RUNBOOK.md)"; exit 2; }
-if [ "${SKIP_DATA:-0}" = "1" ]; then
+if [ -n "${DATA_JOB:-}" ]; then
+  echo "run_mvr: chaining onto existing data job $DATA_JOB"
+  LAUNCH_DEP=(--depend "$DATA_JOB" --allow-missing-corpus)
+elif [ "${SKIP_DATA:-0}" = "1" ]; then
   DATA_JOB=""
   LAUNCH_DEP=()
 else

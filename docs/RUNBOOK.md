@@ -26,6 +26,8 @@ LR=<lr> TRAIN_TIME=00:50:00 arc/run_mvr.sh
 | `audit-p160m-<pipeline>-mvr-v1-s0` ×4 | all detectors (fp32) + Mann-Whitney → `results/<run_id>/metrics.json` | its train job |
 | `audit-base-p160m-mvr-v1` | clean base model: false-positive check + null p-values | data |
 
+To start the data job before the LR is known: `JOB_NAME=data-mvr-v1 arc/submit.sh arc/data.slurm 01:15:00 BUNDLE=mvr-v1`, then later `DATA_JOB=<its id> LR=<lr> arc/run_mvr.sh`.
+
 `LR` comes from the canary-free LR check (`configs/lrcheck2-*`), never from canary results
 (docs/preregistration.md).
 
