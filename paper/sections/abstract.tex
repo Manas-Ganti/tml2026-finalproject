@@ -1,0 +1,12 @@
+% Draft from docs/abstract.md. Fill the bracketed headline numbers from paper/tables/scorecard.md once results exist.
+Writers have no reliable way to show that a language model was trained on their work: membership-inference
+attacks are close to random on large models when members and non-members come from the same distribution. We
+study a creator-side alternative, \emph{canaries}: hidden, made-up details that a writer plants in their text and
+later tests for. We ask how many copies of which canary a writer needs before training on their work becomes
+provable at $p<0.01$, and with what access. We continue pretraining \pythia{160M} on Wikipedia with four canary
+types (random sequences, fluent trap sentences, invisible-character watermarks, and fictional facts) planted at
+1, 4, 16 or 64 copies, with matched never-planted canaries as controls, and pass the corpus through realistic
+cleaning steps (substring deduplication, Unicode normalization, paraphrasing). A pre-registered one-sided
+Mann--Whitney test on member vs.\ non-member scores gives exact false-positive control, which we verify on the
+untouched base model. \todo{one sentence of headline results: which type, how many copies, which access level;
+from scorecard.md}

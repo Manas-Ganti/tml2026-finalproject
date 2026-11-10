@@ -1,0 +1,49 @@
+\section{Results}\label{sec:results}
+% Every number here must come from paper/tables/*.tex|md or a figure. Text is written after the audits finish.
+
+\begin{figure}[t]
+  \centering
+  \IfFileExists{figs/fig1_dose.pdf}{\includegraphics[width=\linewidth]{figs/fig1_dose.pdf}}{\fbox{Fig 1 pending}}
+  \caption{Minimum number of planted copies at which the primary detector reaches $p<0.01$ (200 vs.\ 200
+  canaries), per canary type and pipeline. ``$>$64'' = not detected at any dose.}
+  \label{fig:dose}
+\end{figure}
+
+\textbf{How many copies?} \todo{RQ1 from Fig.~\ref{fig:dose} and Table~\ref{tab:bundle}.}
+
+\begin{figure}[t]
+  \centering
+  \IfFileExists{figs/fig2_survival.pdf}{\includegraphics[width=\linewidth]{figs/fig2_survival.pdf}}{\fbox{Fig 2 pending}}
+  \caption{TPR at 1\% FPR at 16 copies, per canary type (rows) and pipeline (columns), for each access level.}
+  \label{fig:survival}
+\end{figure}
+
+\textbf{Does cleaning remove them?} \todo{RQ2 from Fig.~\ref{fig:survival} and the survival counts.}
+
+\textbf{Is text-only access enough?} \todo{RQ3: gray vs.\ black panels.}
+
+\begin{table}[t]
+  \centering
+  \caption{Minimum bundle size $m$ (members, with $m$ held-out controls) for which $\ge 80\%$ of resampled bundles
+  give $p<0.01$, pipeline \emph{none}. ``--'' = not reached at $m=200$.}
+  \label{tab:bundle}
+  \small
+  \IfFileExists{tables/table1_bundle.tex}{\input{tables/table1_bundle.tex}}{Table 1 pending}
+\end{table}
+
+\begin{figure}[t]
+  \centering
+  \IfFileExists{figs/fig4_qq.pdf}{\includegraphics[width=0.45\linewidth]{figs/fig4_qq.pdf}}{\fbox{Fig 4 pending}}
+  \caption{Clean base model: p-values from 200 random re-splits per cell against the uniform distribution.}
+  \label{fig:qq}
+\end{figure}
+
+\textbf{Can we avoid false accusations?} \todo{RQ4 from Fig.~\ref{fig:qq} and the FPR line of Table~\ref{tab:bundle}.}
+
+\begin{table}[t]
+  \centering
+  \caption{Canary scorecard. ``yes ($N$)'': detectable at $p<0.01$ from $N$ copies (gray box) after that pipeline.}
+  \label{tab:scorecard}
+  \small
+  \IfFileExists{tables/scorecard.tex}{\input{tables/scorecard.tex}}{Scorecard pending}
+\end{table}
