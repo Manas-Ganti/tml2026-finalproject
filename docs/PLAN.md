@@ -60,7 +60,7 @@ building them.
 **Current rule:** all ARC jobs (A's corpus prep and paraphrasing, B's training, C's audits) run on **Manas's
 account** (`manasganti`, Falcon L40S, allocation `tml_2026`). Teammates write and test their code locally against
 `tests/fixtures/` (CPU + `pythia-14m` is enough), open PRs, and post on the board when a job should run; Manas (or
-his agent) submits it with `arc/submit.sh` and shares results via `scripts/sync_from_arc.sh` and the board.
+Manas's agent) submits it with `arc/submit.sh` and shares results via `scripts/sync_from_arc.sh` and the board.
 Why: fair-share is shared across the whole `tml_2026` allocation, so more accounts don't buy queue priority; the
 envs, models and checkpoints already exist on one account, so there are no cross-account hand-offs.
 Disk: ~100-110 GB for everything (§2a). Teammates may still set up their own account later (rules below apply then).
