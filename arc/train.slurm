@@ -17,8 +17,8 @@ ngpu=$(nvidia-smi -L | wc -l); [ "$ngpu" -ge 1 ] || { echo "no GPU visible"; exi
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 EXTRA=()
 [ -n "${CANARY_MAX_STEPS:-}" ] && EXTRA+=(--max-steps "$CANARY_MAX_STEPS")   # e.g. CANARY_MAX_STEPS=20 for smoke runs
-"$PY" -m canary.train --config "$CONFIG" "${EXTRA[@]}" --dry-run
-"$PY" -m canary.train --config "$CONFIG" "${EXTRA[@]}" &
+"$PY" -m canary.train --config "$CONFIG" ${EXTRA[@]+"${EXTRA[@]}"} --dry-run
+"$PY" -m canary.train --config "$CONFIG" ${EXTRA[@]+"${EXTRA[@]}"} &
 child=$!
 wait "$child"
 # One-line summary so the log tail alone says whether the run is usable.
