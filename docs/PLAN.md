@@ -25,7 +25,7 @@ pipeline), plus an audit of the untouched base model for the false-positive chec
 
 | Need | What | Estimate | Owner |
 |------|------|----------|-------|
-| GPU | VT ARC Tinkercliffs, 1×A100-80GB or H200 per job | Tier 0: ~3 GPU-h (1 job). Tier 1: ~8 GPU-h (1 job). Tier 2: ~6 GPU-h. Paraphrasing: ~1–2 GPU-h. Tier 3: ~4 GPU-h. **Total ≈ 25–40 GPU-h**, spread over three accounts (§2b) | each stage's owner |
+| GPU | **Decided Nov 9: VT ARC Falcon, 1×L40S-48GB per job** (Tinkercliffs A100/H200 queue estimates were 5–30 days on the class-wide `tml_2026` allocation). All jobs fit in 48 GB. Use one GPU type for the main grid. Not Owl B200 (needs CUDA ≥12.8; our env is cu126). Submit with `arc/submit.sh` | Tier 0: ~3 GPU-h (1 job). Tier 1: ~8 GPU-h (1 job). Tier 2: ~6 GPU-h. Paraphrasing: ~1–2 GPU-h. Tier 3: ~4 GPU-h. **Total ≈ 25–40 GPU-h**, spread over three accounts (§2b) | each stage's owner |
 | CPU | ARC Owl nodes (96 cores) for corpus prep, substring dedup (suffix array), MinHash | A few CPU-hours | A |
 | Queue | The real bottleneck (1–5 day waits seen in Oct). Bundle all pipelines into one job; try interactive QOS for jobs ≤2 h | Smoke job **this week** to measure latency | B |
 | Conda envs | `CANARY_TRAIN_ENV` (torch 2.6.0+cu126, transformers, trl, datasets) and `CANARY_GEN_ENV` (vllm 0.8.5 + transformers 4.51.3, paraphrasing only). Absolute paths, never merged. Each person builds both on their own account from the lock files in `arc/envs/` | 1 afternoon for B; then ~1 h per teammate | B writes the lock files |
