@@ -1,0 +1,16 @@
+# Pre-B5 LR/warmup check on the canary-free smoke corpus: full epoch (72 steps), 10% warmup.
+# Question: which LRs keep held-out loss near the base model's? (No canaries, so no memorization signal.)
+run_id: lrcheck-160m-3e-5
+model: EleutherAI/pythia-160m
+pipeline: none
+lr: 3e-05
+seed: 0
+corpus_path: data/corpus/smoke
+bundle_id: smoke-nocanary
+embed_mode: spread
+seq_len: 2048
+batch_size: 8
+grad_accum: 4
+heldout_docs: 50
+log_every: 4
+warmup_ratio: 0.1

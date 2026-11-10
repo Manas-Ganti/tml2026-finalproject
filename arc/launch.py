@@ -108,8 +108,8 @@ def main(argv=None) -> int:
     ap.add_argument("--embed-mode", default="spread")
     ap.add_argument("--tag", default="", help="suffix for run ids, e.g. lr3e-4 for the B5 sweep")
     ap.add_argument("--time", default=None, help="fixed sbatch wall time; default: estimated from tokens")
-    ap.add_argument("--tokens-per-s", type=float, default=40_000,
-                    help="measured training throughput used for the wall-time estimate (update from B2)")
+    ap.add_argument("--tokens-per-s", type=float, default=85_000,
+                    help="training throughput for the wall-time estimate. Measured: 86.6k tok/s for 160M on 1x L40S (Nov 10). 410M: not yet measured, pass ~30000")
     ap.add_argument("--submit", action="store_true", help="actually write configs and submit (default: dry run)")
     args = ap.parse_args(argv)
     if os.environ.get("DRY_RUN") == "1":
