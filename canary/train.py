@@ -220,6 +220,8 @@ def main(argv=None) -> int:
                             lr=cfg["lr"], betas=(0.9, 0.95), eps=1e-8,
                             fused=device.type == "cuda")
 
+    if device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats()
     held_before = evaluate(model, held_blocks, cfg["batch_size"], cfg["eval_batches"], device, amp_dtype)
     curve, t0, step, micro = [], time.time(), 0, 0
     running, running_n = 0.0, 0
@@ -271,6 +273,8 @@ def main(argv=None) -> int:
         "corpus_tokens_packed": n_train_tokens,
         "optimizer_steps": step,
         "wall_s": round(wall, 1),
+        "tokens_per_s": round(step * cfg["grad_accum"] * cfg["batch_size"] * cfg["seq_len"] / max(wall, 1e-9)),
+        "peak_gpu_mem_gb": round(torch.cuda.max_memory_allocated() / 2**30, 2) if device.type == "cuda" else None,
         "heldout_loss_before": held_before,
         "heldout_loss_after": held_after,
         "loss_curve": curve,
@@ -290,7 +294,8 @@ def main(argv=None) -> int:
     res_dir.mkdir(parents=True, exist_ok=True)
     (res_dir / "train_metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
     (ckpt_dir / "DONE").write_text(json.dumps({"optimizer_steps": step, "wall_s": round(wall, 1)}) + "\n")
-    print(f"train: done in {wall:.0f}s | held-out loss {held_before} -> {held_after} | saved {ckpt_dir}")
+    print(f"train: done in {wall:.0f}s | {metrics['tokens_per_s']:,} tok/s | peak GPU mem "
+          f"{metrics['peak_gpu_mem_gb']} GB | held-out loss {held_before} -> {held_after} | saved {ckpt_dir}")
     return 0
 
 
