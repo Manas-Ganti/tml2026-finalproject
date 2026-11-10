@@ -49,7 +49,7 @@ Still open (CLAUDE.md §12): whether all three of us are on `tml_2026`, and whic
 | HF model cache: Pythia 14m–410m ~1.5 GB, eval paraphraser 7–8B ~16 GB, reward paraphraser 6–16 GB, reference LM ~2 GB, Qwen-0.5B ~1 GB | 25–40 GB | everyone needs Pythia; only A needs the paraphrasers + reference LM |
 | Wikipedia source (stream the ~100M tokens we need; don't download all of it, which is ~20 GB) | ~1 GB | A |
 | Corpora, ~10 variants × (0.45 GB text + 0.2 GB token ids); substring-dedup temp files 3–5 GB | 5–7 GB (+5 temp) | A writes; B downloads |
-| Final checkpoints (save bf16 to halve); optimizer `checkpoint-*` dirs ~6.5 GB each at 410M, delete after each run | 30–35 GB (+15 temp) | B writes; C downloads only what it audits |
+| Final checkpoints (**fp32**: bf16 weights distort loss-based detectors, see C1); optimizer `checkpoint-*` dirs ~6.5 GB each at 410M, delete after each run | 30–35 GB (+15 temp) | B writes; C downloads only what it audits |
 | Scores, generations, logs, W&B, TMPDIR | ~10 GB | everyone |
 
 **Peak ≈ 120–150 GB on the busiest account (B), ≈ 50–80 GB for A and C.** All far below the 640 GB `/home` quota.
@@ -172,7 +172,7 @@ tests against `tests/fixtures/` first, so nobody waits on anyone.
 | ID | Task | Depends on | Done when | Status |
 |----|------|-----------|-----------|--------|
 | C0 | **Pre-registration** (`docs/preregistration.md`): one primary detector per access level, primary test, alpha, how ties/combos are handled. Everyone signs off **before M4** | — | Merged before any real results are read | todo |
-| C1 | Gray-box detectors: loss, zlib ratio, Min-K%, Min-K%++, ref-calibrated (base model), nonmember-calibrated | schemas | Scores on fixture + `pythia-70m` locally | todo |
+| C1 | Gray-box detectors: loss, zlib ratio, Min-K%, Min-K%++, ref-calibrated (base model), nonmember-calibrated. **Score in fp32 only:** bf16 shifts Pythia-160M's loss by 0.5–0.9 nats on short text, differently per GPU (fp32 5.215 vs bf16 6.146 CPU / 6.105 A100 / 5.708 L40S on one sentence, Nov 10) | schemas | Scores on fixture + `pythia-70m` locally | todo |
 | C2 | Black-box detectors: greedy prefix-completion match, cloze QA over a fixed answer space, sampling-based perplexity | schemas | Same | todo |
 | C3 | `canary/stats.py`: one-sided Mann-Whitney U, Holm–Bonferroni, re-split null distribution, min-bundle-size curve, TPR@1%FPR, AUC | fixtures | Unit tests: uniform p-values on null fixture, small p on signal fixture | todo |
 | C4 | `canary/audit.py`: checkpoint + bundle → `scores.jsonl` + `metrics.json` (with the provenance fields from §2b rule 4). Downloads artifacts by HF revision | C1–C3 | Runs on smoke checkpoint (M2) | todo |

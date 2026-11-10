@@ -6,7 +6,7 @@ Owner: B · Task: B3 (docs/PLAN.md §5). Interfaces: canary/schemas.py.
 
 Reads `corpus_path/shard_*.jsonl` (+ `manifest.json`), packs documents into fixed-length blocks, trains for
 one epoch (or `max_steps`) with AdamW + linear warmup + cosine decay, and writes:
-  - ckpt/<run_id>/            HF checkpoint (weights in `save_dtype`, default bf16) + tokenizer + DONE marker
+  - ckpt/<run_id>/            HF checkpoint (weights in `save_dtype`, default fp32) + tokenizer + DONE marker
   - results/<run_id>/train_metrics.json   loss curve, held-out loss before/after, provenance
 No optimizer checkpoints are written (runs are short), so there's nothing to clean up afterwards.
 
@@ -48,7 +48,8 @@ DEFAULTS = {
     "weight_decay": 0.01,
     "max_grad_norm": 1.0,
     "precision": "bf16",      # autocast dtype on GPU: bf16 | fp32
-    "save_dtype": "bf16",     # dtype of saved weights: bf16 | fp32
+    "save_dtype": "fp32",     # dtype of saved weights. Keep fp32: bf16 shifts Pythia's loss by 0.5-0.9 nats
+                              # on short text (measured Nov 10), which would swamp loss-based detectors
     "heldout_docs": 200,      # canary-free docs held out for before/after loss
     "eval_batches": 20,
     "log_every": 10,
@@ -222,7 +223,7 @@ def main(argv=None) -> int:
 
     if device.type == "cuda":
         torch.cuda.reset_peak_memory_stats()
-    held_before = evaluate(model, held_blocks, cfg["batch_size"], cfg["eval_batches"], device, amp_dtype)
+    held_before = evaluate(model, held_blocks, cfg["batch_size"], cfg["eval_batches"], device, None)  # fp32 eval
     curve, t0, step, micro = [], time.time(), 0, 0
     running, running_n = 0.0, 0
     done = False
@@ -257,7 +258,7 @@ def main(argv=None) -> int:
             if cfg["max_steps"] is None and step >= steps_per_epoch * cfg["epochs"]:
                 done = True
     wall = time.time() - t0
-    held_after = evaluate(model, held_blocks, cfg["batch_size"], cfg["eval_batches"], device, amp_dtype)
+    held_after = evaluate(model, held_blocks, cfg["batch_size"], cfg["eval_batches"], device, None)  # fp32 eval
 
     ckpt_dir.mkdir(parents=True, exist_ok=True)
     if cfg["save_dtype"] == "bf16":

@@ -9,7 +9,7 @@ min_lr_ratio: 0.1
 weight_decay: 0.01
 max_grad_norm: 1.0
 precision: bf16
-save_dtype: bf16
+save_dtype: fp32      # never bf16: it shifts loss by 0.5-0.9 nats (see PLAN C1)
 heldout_docs: 200
 eval_batches: 20
 log_every: 10
