@@ -5,6 +5,21 @@ Newest entry at the top. Agents read this at the start of every session.
 
 ---
 
+## 2026-11-09 (evening) · Manas (+ agent) · role B (suggested; not yet claimed by PR)
+- **Done:** B1 on ARC: both envs built and import-checked (`canary-train` 5.9 GB, `canary-gen` 8.3 GB), Pythia
+  14m–410m downloaded, 5-min GPU test passed on a Tinkercliffs A100 (job started at once, ran 39 s). B3
+  `canary/train.py` in PR #3 (12 tests pass locally). B2: smoke corpus built on ARC (933 Wikipedia articles,
+  5.0M tokens); `arc/train.slurm` + `arc/submit.sh` (cluster-aware wrapper with DRY_RUN). Logs go to `<repo>/logs/`.
+- **Queue finding (important for everyone):** `tml_2026` is a class-wide allocation. Priority ≈ QOS 1200 +
+  fair-share 73, so waiting barely raises it. `--test-only` estimates: Tinkercliffs A100 Nov 15–25, H200 Dec 12,
+  Falcon L40S Dec 8, even for 10–20 min jobs. The estimates are pessimistic: a real 10-min job started at once,
+  and small L40S jobs have backfilled quickly before. **Decision: Falcon L40S, short single-GPU jobs (≤~1 h) so
+  they backfill.** Colab Pro is the fallback for 160M.
+- **Next:** env + 20-step training smoke on Falcon (submitted). Then B4 grid launcher (one short job per
+  pipeline, skips runs with `DONE`). Commit env lock files (`arc/envs/*.txt`, need rsync from ARC).
+- **Blocked / needs teammates:** PR #1 → #2 → #3 need review and merge. Roles A and C unclaimed. M2 (Fri Nov 14)
+  needs A's small real bundle and C's `audit.py`.
+
 ## 2026-11-09 · Manas (+ agent)
 - **Done:** Scope approved → Phase 1. Wrote `docs/PLAN.md` (what we attempt, infra list, roles, milestones
   M0–M7, task IDs A1–A7 / B1–B6 / C0–C6 / S1–S3). Built the agent message board (`docs/BOARD.md`,
