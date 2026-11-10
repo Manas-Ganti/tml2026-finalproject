@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Run on the ARC login node before any expensive submit (CLAUDE.md §7). Owner: B (task B1).
-# Usage: CANARY_PID=<pid> ALLOC=<account> arc/preflight.sh
+# Usage: CANARY_PID=$USER arc/preflight.sh   (ALLOC defaults to tml_2026)
 set -uo pipefail
-: "${CANARY_PID:?}"; : "${ALLOC:?set ALLOC to the ARC allocation account}"
+: "${CANARY_PID:?}"; ALLOC="${ALLOC:-tml_2026}"
 cd "$(dirname "$0")/.."
 echo "== interpreters";  for e in train gen; do (source arc/env.sh "$e") || echo "FAIL: $e env"; done
 echo "== quota";         quota -s 2>/dev/null || echo "(quota unavailable)"

@@ -2,7 +2,7 @@
 # 5-minute GPU test job: right interpreter inside the batch env, GPU visible, a Pythia forward pass.
 # Scheduling flags go on the CLI (one line; multi-line pastes break in the ARC terminal):
 #   mkdir -p /home/<pid>/canary/logs
-#   sbatch --account=<ALLOC> --partition=a100_normal_q --qos=tc_a100_normal_short --gres=gpu:1 --cpus-per-task=4 --mem=32G --time=00:10:00 --export=ALL,CANARY_PID=<pid> --output=/home/<pid>/canary/logs/smoke_env_%j.out arc/smoke_env.slurm
+#   sbatch --account=tml_2026 --partition=a100_normal_q --qos=tc_a100_normal_short --gres=gpu:1 --cpus-per-task=4 --mem=32G --time=00:10:00 --export=ALL,CANARY_PID=<pid> --output=/home/<pid>/canary/logs/smoke_env_%j.out arc/smoke_env.slurm
 set -euo pipefail
 cd "${SLURM_SUBMIT_DIR:-.}"
 set +u; source arc/env.sh train; set -u
