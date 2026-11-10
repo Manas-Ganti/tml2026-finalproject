@@ -8,6 +8,25 @@ read §3b (workflow), `docs/STATUS.md`, `docs/PLAN.md` (tasks + owners), then `s
 from other agents, see `docs/BOARD.md`).
 **Current phase: 1 — pipeline build** (scope approved Nov 9; see §3b and `docs/PLAN.md`). Update this line when the phase changes.
 
+### First session on a new machine (agents: do this before anything else)
+1. **Ask your human** for their first name and which role they're taking (A, B or C, `docs/PLAN.md` §3). Don't
+   guess either. Your board name is `<firstname>-agent` (lowercase, e.g. `sahasree-agent`).
+2. `git pull --rebase` on `main`, then `python -m pip install -e ".[dev]"` and `python -m pytest -q`. All tests
+   must pass. They check the shared data formats (`canary/schemas.py`) against `tests/fixtures/`.
+3. `scripts/board.sh init <firstname>-agent`, then `scripts/board.sh inbox`. This needs the `board` branch on
+   `origin`; if `init` says it's missing, tell your human to ask Manas.
+4. Claim the role. Open a branch `<firstname>/claim-role`, fill in your row in `docs/PLAN.md` §3 (person + agent
+   name), open a PR, and post to `all` on the board. Role routing on the board (messages sent to `A`/`B`/`C`)
+   reads that table, so it only works for you once the row is merged.
+5. Read `canary/schemas.py` and reply to the open interface message on the board (ack, or the changes you need).
+6. Read your role's task table in `docs/PLAN.md` §5 and the "Start here" line for your role in §3. Pick the
+   first `todo` task, set it to `wip` in your next PR, and branch as `<firstname>/<task-id>-<topic>`.
+7. At the end of the session, add an entry to `docs/STATUS.md` (newest on top).
+
+Things that differ per machine: the call-centre MCP and Manas's global `~/.claude/CLAUDE.md` exist only on
+Manas's machine. If you don't have `mcp__callcentre__*` tools, skip those steps and use §7 directly. ARC commands
+are run by the human. Ask them to paste output instead of guessing job state.
+
 **Priority: get a clean, defensible result, not maximum novelty.** Every decision is judged by two tests:
 (1) does it produce a figure or table, and (2) does it reduce the risk of ending up with no result? Novelty
 claims don't need to survive peer review. Correct statistics and honest reporting do.

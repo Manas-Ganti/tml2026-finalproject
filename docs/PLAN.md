@@ -45,7 +45,7 @@ paraphraser models we use.
 
 Roles from CLAUDE.md §3b. **Claim a role** by putting your name here in a PR *and* posting on the message
 board (`docs/BOARD.md`). Suggested split: Manas takes B, because the ARC runbook and call-centre knowledge base
-live on his machine. Everyone can change that.
+live on Manas's machine. Everyone can change that.
 
 | Role | Owns | Person | Agent name on the board |
 |------|------|--------|-------------------------|
@@ -54,6 +54,17 @@ live on his machine. Everyone can change that.
 | **C — Detection, stats & figures** | detectors, audit test, calibration, scorecard, figures, CLI | _unclaimed_ | — |
 
 Agent names on the board are `<firstname>-agent` (e.g. `manas-agent`).
+
+**Start here, per role** (all work runs locally against `tests/fixtures/`, so nobody waits for ARC):
+- **A:** A2 first. Write `canary/generate.py` so its output passes `schemas.validate_bundle`. Use
+  `scripts/make_fixtures.py` as a format reference. A1 (corpus prep on Owl) runs in parallel once you have ARC
+  access. Decide the eval paraphraser and post it to `all`.
+- **B:** B1 + B2 first (ARC envs, then the smoke job). The queue wait is the biggest schedule risk. Then B3
+  (`canary/train.py`), testing locally with `EleutherAI/pythia-14m` on `tests/fixtures/corpus/none`. Decide shared
+  storage (§2) and post it to `all`.
+- **C:** C0 (pre-registration draft) and C3 (`canary/stats.py`) first. Test C3 on
+  `tests/fixtures/results/fixture-160m-none/scores_{signal,null}.jsonl`: reject on signal, uniform p-values on null.
+  Then C1/C2 on `pythia-14m` locally.
 
 ---
 
