@@ -122,6 +122,9 @@ in §3c. That way no one waits on anyone else.
 - `git pull --rebase` before starting a session. Commit small and often, with clear messages.
 - **Never commit** data, corpora, checkpoints, `results/` raw dumps, secrets, or HF/W&B tokens (see `.gitignore`).
   Large artifacts live on ARC under `/home/<pid>/canary/` or the HF Hub. Only small `metrics.json` summaries go in git.
+- **ARC: everyone runs their own stage on their own account** (A data, B training, C audits). Artifacts move only
+  through private HF Hub repos, pinned by revision, with envs built from `arc/envs/*.txt` lock files. Full rules:
+  `docs/PLAN.md` §2b.
 - **Changing this CLAUDE.md or an interface in §3c** requires a dedicated PR and a heads-up to the team, because
   every agent reads it.
 - At the end of a session, each person (or their agent) appends a short entry to `docs/STATUS.md`: what was done,
