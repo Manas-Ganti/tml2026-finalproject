@@ -25,7 +25,7 @@ pipeline), plus an audit of the untouched base model for the false-positive chec
 
 | Need | What | Estimate | Owner |
 |------|------|----------|-------|
-| GPU | VT ARC Tinkercliffs, 1×A100-80GB or H200 per job | Tier 0: ~3 GPU-h (1 job). Tier 1: ~8 GPU-h (1 job). Tier 2: ~6 GPU-h. Paraphrasing: ~1–2 GPU-h. Tier 3: ~4 GPU-h. **Total ≈ 25–40 GPU-h**, spread over three accounts (§2b) | each stage's owner |
+| GPU | **Decided Nov 9: VT ARC Falcon, 1×L40S-48GB per job** (Tinkercliffs A100/H200 queue estimates were 5–30 days on the class-wide `tml_2026` allocation). All jobs fit in 48 GB. Use one GPU type for the main grid. Not Owl B200 (needs CUDA ≥12.8; our env is cu126). Submit with `arc/submit.sh` | Tier 0: ~3 GPU-h (1 job). Tier 1: ~8 GPU-h (1 job). Tier 2: ~6 GPU-h. Paraphrasing: ~1–2 GPU-h. Tier 3: ~4 GPU-h. **Total ≈ 25–40 GPU-h**, spread over three accounts (§2b) | each stage's owner |
 | CPU | ARC Owl nodes (96 cores) for corpus prep, substring dedup (suffix array), MinHash | A few CPU-hours | A |
 | Queue | The real bottleneck (1–5 day waits seen in Oct). Bundle all pipelines into one job; try interactive QOS for jobs ≤2 h | Smoke job **this week** to measure latency | B |
 | Conda envs | `CANARY_TRAIN_ENV` (torch 2.6.0+cu126, transformers, trl, datasets) and `CANARY_GEN_ENV` (vllm 0.8.5 + transformers 4.51.3, paraphrasing only). Absolute paths, never merged. Each person builds both on their own account from the lock files in `arc/envs/` | 1 afternoon for B; then ~1 h per teammate | B writes the lock files |
@@ -49,7 +49,7 @@ Still open (CLAUDE.md §12): whether all three of us are on `tml_2026`, and whic
 | HF model cache: Pythia 14m–410m ~1.5 GB, eval paraphraser 7–8B ~16 GB, reward paraphraser 6–16 GB, reference LM ~2 GB, Qwen-0.5B ~1 GB | 25–40 GB | everyone needs Pythia; only A needs the paraphrasers + reference LM |
 | Wikipedia source (stream the ~100M tokens we need; don't download all of it, which is ~20 GB) | ~1 GB | A |
 | Corpora, ~10 variants × (0.45 GB text + 0.2 GB token ids); substring-dedup temp files 3–5 GB | 5–7 GB (+5 temp) | A writes; B downloads |
-| Final checkpoints (save bf16 to halve); optimizer `checkpoint-*` dirs ~6.5 GB each at 410M, delete after each run | 30–35 GB (+15 temp) | B writes; C downloads only what it audits |
+| Final checkpoints (**fp32**: bf16 weights distort loss-based detectors, see C1); optimizer `checkpoint-*` dirs ~6.5 GB each at 410M, delete after each run | 30–35 GB (+15 temp) | B writes; C downloads only what it audits |
 | Scores, generations, logs, W&B, TMPDIR | ~10 GB | everyone |
 
 **Peak ≈ 120–150 GB on the busiest account (B), ≈ 50–80 GB for A and C.** All far below the 640 GB `/home` quota.
@@ -163,8 +163,8 @@ tests against `tests/fixtures/` first, so nobody waits on anyone.
 | B1 | Build both conda envs on ARC with `arc/setup_envs.sh all` (writes lock files `arc/envs/{train,gen}.txt`); pre-download models with `arc/download_models.sh`; GPU check with `arc/smoke_env.slurm`; finish `arc/env.sh` + `arc/preflight.sh`; pre-download Pythia 160M/410M; create the HF team org + add A and C | ARC alloc | Preflight passes in a 5-min job; lock files merged; teammates can push to the org | todo |
 | B1b | Each teammate (A, C) builds both envs on their own account from the lock files and runs `arc/preflight.sh` | B1 | Preflight passes on all three accounts | todo |
 | B2 | **Smoke job this week**: 160M, a few hundred steps on a tiny corpus. Measures queue latency | B1 | `sacct` shows COMPLETED; latency noted in STATUS | todo |
-| B3 | `canary/train.py`: config-driven continued pretraining, 1 epoch, pinned LR schedule, saves HF checkpoint, deletes optimizer dirs | schemas | Trains on fixture corpus locally (CPU, tiny model) | todo |
-| B4 | `arc/launch.py` with `DRY_RUN=1` + bundled grid job (one model size × all pipelines in sequence, then audit) | B3, C4 | DRY_RUN prints every command; smoke passes | todo |
+| B3 | `canary/train.py`: config-driven continued pretraining, 1 epoch, pinned LR schedule, saves HF checkpoint, deletes optimizer dirs | schemas | Trains on fixture corpus locally (CPU, tiny model) | review |
+| B4 | `arc/launch.py` with `DRY_RUN=1` + bundled grid job (one model size × all pipelines in sequence, then audit) | B3, C4 | DRY_RUN prints every command; smoke passes | review |
 | B5 | LR sensitivity check on 160M (2–3 LRs, `none` only) | B4 | One table for the appendix | todo |
 | B6 | Tier 2: SFT (Dolly/Alpaca subset) → DPO (HH-RLHF/UltraFeedback subset) with TRL on the `none` checkpoints | B4 | Checkpoints per stage | todo |
 
@@ -172,7 +172,7 @@ tests against `tests/fixtures/` first, so nobody waits on anyone.
 | ID | Task | Depends on | Done when | Status |
 |----|------|-----------|-----------|--------|
 | C0 | **Pre-registration** (`docs/preregistration.md`): one primary detector per access level, primary test, alpha, how ties/combos are handled. Everyone signs off **before M4** | — | Merged before any real results are read | todo |
-| C1 | Gray-box detectors: loss, zlib ratio, Min-K%, Min-K%++, ref-calibrated (base model), nonmember-calibrated | schemas | Scores on fixture + `pythia-70m` locally | todo |
+| C1 | Gray-box detectors: loss, zlib ratio, Min-K%, Min-K%++, ref-calibrated (base model), nonmember-calibrated. **Score in fp32 only:** bf16 shifts Pythia-160M's loss by 0.5–0.9 nats on short text, differently per GPU (fp32 5.215 vs bf16 6.146 CPU / 6.105 A100 / 5.708 L40S on one sentence, Nov 10) | schemas | Scores on fixture + `pythia-70m` locally | todo |
 | C2 | Black-box detectors: greedy prefix-completion match, cloze QA over a fixed answer space, sampling-based perplexity | schemas | Same | todo |
 | C3 | `canary/stats.py`: one-sided Mann-Whitney U, Holm–Bonferroni, re-split null distribution, min-bundle-size curve, TPR@1%FPR, AUC | fixtures | Unit tests: uniform p-values on null fixture, small p on signal fixture | todo |
 | C4 | `canary/audit.py`: checkpoint + bundle → `scores.jsonl` + `metrics.json` (with the provenance fields from §2b rule 4). Downloads artifacts by HF revision | C1–C3 | Runs on smoke checkpoint (M2) | todo |

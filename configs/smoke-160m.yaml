@@ -1,0 +1,16 @@
+# B2 smoke run on ARC: Pythia-160M, ~5M tokens of canary-free Wikipedia, one epoch (~75 optimizer steps).
+# Purpose: GPU end to end at real seq_len, throughput (tokens/s) for sizing the grid, checkpoint format.
+# LR is a placeholder until the B5 sensitivity check pins it.
+run_id: smoke-160m
+model: EleutherAI/pythia-160m
+pipeline: none
+lr: 1.0e-4
+seed: 0
+corpus_path: data/corpus/smoke
+bundle_id: smoke-nocanary
+embed_mode: spread
+seq_len: 2048
+batch_size: 8
+grad_accum: 4
+heldout_docs: 50
+log_every: 5

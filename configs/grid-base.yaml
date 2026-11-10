@@ -1,0 +1,15 @@
+# Shared training settings for every grid run (arc/launch.py fills in run_id, model, pipeline, lr, seed,
+# corpus_path, bundle_id, embed_mode). Change only by PR: every grid run must use the same values.
+seq_len: 2048
+batch_size: 8
+grad_accum: 4          # 8 x 4 x 2048 = 64k tokens per optimizer step
+epochs: 1
+warmup_ratio: 0.01
+min_lr_ratio: 0.1
+weight_decay: 0.01
+max_grad_norm: 1.0
+precision: bf16
+save_dtype: fp32      # never bf16: it shifts loss by 0.5-0.9 nats (see PLAN C1)
+heldout_docs: 200
+eval_batches: 20
+log_every: 10
