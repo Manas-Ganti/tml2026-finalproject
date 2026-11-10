@@ -56,7 +56,10 @@ building them.
 ### 2b. Who runs what on ARC, and how artifacts move (decided Nov 9)
 Each person clones the repo into their own ARC `/home` and **runs their own stage on their own account**. We
 can't write to each other's `/home`, so artifacts move through **private HF Hub repos** under one team org
-(name TBD, created by B). This also puts three accounts in the queue instead of one.
+(name TBD, created by B). Nobody waits on one person to run their jobs, and stages can run in parallel.
+**Queue note:** all jobs on one ARC allocation share its fair-share priority (call-centre ARC runbook), so if
+we're all on the same allocation, three accounts do *not* triple our priority. Don't submit duplicate jobs
+across accounts. Each one lowers everyone's priority, so cancel any duplicate at once.
 
 | Stage | Runs on | Writes | Hand-off to |
 |-------|---------|--------|-------------|
@@ -82,11 +85,11 @@ can't write to each other's `/home`, so artifacts move through **private HF Hub 
 **The planned replication ("compare"):** after M3, someone other than B (default: C) re-runs the 160M `none`
 training on their own account with a different seed. Matching results show the setup reproduces across accounts.
 The gap between the two runs is our seed variance, and it goes into the paper as error bars. This is task S4.
-After the MVR (M4), later tiers can also be split by experiment so they run on three queues at once (e.g. B: 410M
-grid, A: tier 3 search, C: post-training audits).
+After the MVR (M4), later tiers can also be split by experiment so they run in parallel (e.g. B: 410M grid,
+A: tier 3 search, C: post-training audits).
 
-**Still to confirm:** whether all three accounts are on the same allocation (and whether each user gets their own
-queue priority), and HF Hub's private-storage limit for an org (we need ~50 GB).
+**Still to confirm:** whether all three accounts are on the same allocation (if not, separate allocations do give us
+separate fair-share), and HF Hub's private-storage limit for an org (we need ~50 GB).
 
 ---
 
@@ -154,7 +157,7 @@ tests against `tests/fixtures/` first, so nobody waits on anyone.
 ### B — Training & infra (`arc/`, `canary/train.py`, `rl/posttrain.py`, `configs/`)
 | ID | Task | Depends on | Done when | Status |
 |----|------|-----------|-----------|--------|
-| B1 | Build both conda envs on ARC; write lock files `arc/envs/{train,gen}.txt`; finish `arc/env.sh` + `arc/preflight.sh`; pre-download Pythia 160M/410M; create the HF team org + add A and C | ARC alloc | Preflight passes in a 5-min job; lock files merged; teammates can push to the org | todo |
+| B1 | Build both conda envs on ARC with `arc/setup_envs.sh all` (writes lock files `arc/envs/{train,gen}.txt`); pre-download models with `arc/download_models.sh`; GPU check with `arc/smoke_env.slurm`; finish `arc/env.sh` + `arc/preflight.sh`; pre-download Pythia 160M/410M; create the HF team org + add A and C | ARC alloc | Preflight passes in a 5-min job; lock files merged; teammates can push to the org | todo |
 | B1b | Each teammate (A, C) builds both envs on their own account from the lock files and runs `arc/preflight.sh` | B1 | Preflight passes on all three accounts | todo |
 | B2 | **Smoke job this week**: 160M, a few hundred steps on a tiny corpus. Measures queue latency | B1 | `sacct` shows COMPLETED; latency noted in STATUS | todo |
 | B3 | `canary/train.py`: config-driven continued pretraining, 1 epoch, pinned LR schedule, saves HF checkpoint, deletes optimizer dirs | schemas | Trains on fixture corpus locally (CPU, tiny model) | todo |

@@ -6,13 +6,14 @@
 CANARY_TRAIN_ENV="${CANARY_TRAIN_ENV:-/home/$CANARY_PID/envs/canary-train}"   # torch 2.6.0+cu126, transformers, trl
 CANARY_GEN_ENV="${CANARY_GEN_ENV:-/home/$CANARY_PID/envs/canary-gen}"         # vllm 0.8.5 + transformers 4.51.3
 
+# Sourcing this in a login shell is fine: on failure it returns instead of closing your shell.
 case "${1:-train}" in
   train) CANARY_ENV="$CANARY_TRAIN_ENV"; SENTINEL="import torch, transformers, trl, datasets" ;;
   gen)   CANARY_ENV="$CANARY_GEN_ENV";   SENTINEL="import vllm, transformers" ;;
   *) echo "env.sh: use 'train' or 'gen'" >&2; return 1 ;;
 esac
 
-module load Miniconda3 && module load CUDA/12.6.0
+_u=$-; set +u; module load Miniconda3 && module load CUDA/12.6.0; case $_u in *u*) set -u;; esac
 export PATH="$CANARY_ENV/bin:$PATH"
 export PYTHONNOUSERSITE=1
 export HF_HOME="/home/$CANARY_PID/hf_cache"
@@ -22,6 +23,6 @@ export TMPDIR="/home/$CANARY_PID/tmp"; mkdir -p "$TMPDIR" "$WANDB_DIR"
 PY="$CANARY_ENV/bin/python"
 
 # Asserts: wrong interpreter or a 0-byte python binary are the classic "job COMPLETED in 2 s" failures.
-[ -s "$PY" ] || { echo "env.sh: $PY missing or 0 bytes" >&2; exit 3; }
+[ -s "$PY" ] || { echo "env.sh: $PY missing or 0 bytes" >&2; return 3 2>/dev/null || exit 3; }
 "$PY" -c "import sys; assert sys.executable.startswith('$CANARY_ENV'), sys.executable; $SENTINEL; print('env ok:', sys.executable)" \
-  || { echo "env.sh: sentinel import failed in $CANARY_ENV" >&2; exit 3; }
+  || { echo "env.sh: sentinel import failed in $CANARY_ENV" >&2; return 3 2>/dev/null || exit 3; }
