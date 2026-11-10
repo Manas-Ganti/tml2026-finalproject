@@ -56,7 +56,16 @@ Still open (CLAUDE.md §12): whether all three of us are on `tml_2026`, and whic
 Conda envs have hundreds of thousands of small files, so also check the file-count line of `quota -s` before
 building them.
 
-### 2b. Who runs what on ARC, and how artifacts move (decided Nov 9)
+### 2b. Who runs what on ARC (revised Nov 10: everything runs on Manas's account)
+**Current rule:** all ARC jobs (A's corpus prep and paraphrasing, B's training, C's audits) run on **Manas's
+account** (`manasganti`, Falcon L40S, allocation `tml_2026`). Teammates write and test their code locally against
+`tests/fixtures/` (CPU + `pythia-14m` is enough), open PRs, and post on the board when a job should run; Manas (or
+his agent) submits it with `arc/submit.sh` and shares results via `scripts/sync_from_arc.sh` and the board.
+Why: fair-share is shared across the whole `tml_2026` allocation, so more accounts don't buy queue priority; the
+envs, models and checkpoints already exist on one account, so there are no cross-account hand-offs.
+Disk: ~100-110 GB for everything (§2a). Teammates may still set up their own account later (rules below apply then).
+
+The original Nov 9 plan, kept for reference and for anyone who sets up their own account:
 Each person clones the repo into their own ARC `/home` and **runs their own stage on their own account**. We
 can't write to each other's `/home`, so artifacts move through **private HF Hub repos** under one team org
 (name TBD, created by B). Nobody waits on one person to run their jobs, and stages can run in parallel.
@@ -161,7 +170,7 @@ tests against `tests/fixtures/` first, so nobody waits on anyone.
 | ID | Task | Depends on | Done when | Status |
 |----|------|-----------|-----------|--------|
 | B1 | Build both conda envs on ARC with `arc/setup_envs.sh all` (writes lock files `arc/envs/{train,gen}.txt`); pre-download models with `arc/download_models.sh`; GPU check with `arc/smoke_env.slurm`; finish `arc/env.sh` + `arc/preflight.sh`; pre-download Pythia 160M/410M; create the HF team org + add A and C | ARC alloc | Preflight passes in a 5-min job; lock files merged; teammates can push to the org | todo |
-| B1b | Each teammate (A, C) builds both envs on their own account from the lock files and runs `arc/preflight.sh` | B1 | Preflight passes on all three accounts | todo |
+| B1b | *(optional since Nov 10)* A teammate who wants their own ARC account builds both envs from the lock files and runs `arc/preflight.sh` | B1 | Preflight passes | optional |
 | B2 | **Smoke job this week**: 160M, a few hundred steps on a tiny corpus. Measures queue latency | B1 | `sacct` shows COMPLETED; latency noted in STATUS | todo |
 | B3 | `canary/train.py`: config-driven continued pretraining, 1 epoch, pinned LR schedule, saves HF checkpoint, deletes optimizer dirs | schemas | Trains on fixture corpus locally (CPU, tiny model) | review |
 | B4 | `arc/launch.py` with `DRY_RUN=1` + bundled grid job (one model size × all pipelines in sequence, then audit) | B3, C4 | DRY_RUN prints every command; smoke passes | review |
@@ -185,7 +194,7 @@ tests against `tests/fixtures/` first, so nobody waits on anyone.
 | S1 | Literature sweep (CLAUDE.md §10), split three ways; verify every citation | all | todo |
 | S2 | `paper/` skeleton with the NeurIPS template; intro + threat model draft | whoever is free first | todo |
 | S3 | Each owner writes methods + results for their own module | all | todo |
-| S4 | Cross-account replication: re-run 160M `none` with a new seed on a non-B account; compare (§2b) | C (default) | todo |
+| S4 | Seed replication: re-run 160M `none` with a new seed; compare (gives seed variance for error bars; cross-account only if a teammate has their own) | C (default) | todo |
 
 ---
 
