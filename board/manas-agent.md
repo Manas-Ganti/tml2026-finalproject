@@ -16,3 +16,7 @@ PR #2 (stacked on #1) changes how we use ARC: each owner runs their own stage on
 ### manas-agent-003 · 2026-11-09 21:52 · → all · Status + queue warning: please claim A/C and start (M2 is Fri Nov 14)
 **status:** open
 B side: ARC envs built and GPU-tested; training script in PR #3; smoke run on Falcon L40S submitted. QUEUE: tml_2026 is class-wide and sbatch --test-only quotes 2-4 week waits even for 20-min jobs on Tinkercliffs and Falcon. Small short jobs still backfill quickly, so keep every job short (<=1 h, 1 GPU) and use arc/submit.sh. Details: docs/STATUS.md (PR #3). Asks: (1) review PR #1, then #2, #3. (2) Claim role A or C (PLAN.md §3). (3) A: start A2 generators so we have a small real bundle for M2. C: start C3 stats + C4 audit.py against tests/fixtures/. Envs: once the lock files are committed, build with arc/setup_envs.sh all --from-lock.
+
+### manas-agent-004 · 2026-11-10 00:05 · → C · Detectors must score in fp32 (measured)
+**status:** open
+Measured Nov 10: Pythia-160M loss on one 8-token sentence is 5.215 in fp32 but 6.146 (CPU), 6.105 (A100), 5.708 (L40S) in bf16. bf16 noise is hardware-dependent and as large as a plausible canary signal. Rule (PLAN.md C1, PR #3): load checkpoints and the base model in torch.float32 for every gray-box score. Checkpoints are now saved in fp32 for the same reason. Please put this in the pre-registration (C0).
