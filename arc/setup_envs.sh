@@ -17,15 +17,27 @@ TORCH_INDEX="https://download.pytorch.org/whl/cu126"
 export PYTHONNOUSERSITE=1
 export TMPDIR="/home/$CANARY_PID/tmp"            # /tmp is a different filesystem (breaks some builds)
 export PIP_CACHE_DIR="/home/$CANARY_PID/pip_cache"
-mkdir -p "$BASE" "$TMPDIR" "$PIP_CACHE_DIR" "$LOCKS"
+mkdir -p "$BASE" "$TMPDIR" "$PIP_CACHE_DIR" "$LOCKS" "/home/$CANARY_PID/canary/logs"
+LOG="/home/$CANARY_PID/canary/logs/setup_envs_$(date +%Y%m%d_%H%M%S).log"
+exec > >(tee -a "$LOG") 2>&1          # everything below also goes to the log file
+echo "setup: logging to $LOG"
+trap 'echo "setup: FAILED at line $LINENO (exit $?). Full log: $LOG"' ERR
+WROTE_LOCKS=()
 
 [ "${CONDA_SHLVL:-0}" -le 1 ] || { echo "setup: deactivate conda envs first (CONDA_SHLVL=$CONDA_SHLVL)"; exit 2; }
 set +u; module load Miniconda3; set -u
 
 make_env() {  # name
   local env="$BASE/$1"
-  if [ -x "$env/bin/python" ]; then
-    echo "setup: $env already exists. Remove it (rm -rf $env) to rebuild."; return 1
+  if [ -f "$env/.canary-env" ]; then
+    echo "setup: $1 is complete (passed its import check on $(cut -d' ' -f3 "$env/.canary-env")); skipping."
+    return 1
+  fi
+  if [ -e "$env" ]; then
+    # No marker = an earlier build stopped part-way. Only our own project path is ever removed.
+    case "$env" in "/home/$CANARY_PID/envs/canary-"*) ;; *) echo "setup: refusing to remove $env"; exit 2;; esac
+    echo "setup: $1 is incomplete (no .canary-env marker); removing and rebuilding."
+    rm -rf "$env"
   fi
   conda create -y -q -p "$env" python=3.11
   [ -s "$env/bin/python" ] || { echo "setup: $env/bin/python missing or 0 bytes"; exit 3; }
@@ -60,7 +72,7 @@ import torch, transformers, trl, datasets, pyarrow, pyarrow.parquet as pq, canar
 assert torch.__version__.startswith("2.6.0"), torch.__version__
 t = pyarrow.table({"x": [1, 2]}); pq.write_table(t, "/dev/null")   # pyarrow/numpy sanity
 print("torch", torch.__version__, "cuda build", torch.version.cuda, "| transformers", transformers.__version__, "| trl", trl.__version__)'
-  [ "$MODE" = "--from-lock" ] || "$py" -m pip freeze --exclude-editable > "$LOCKS/train.txt"
+  if [ "$MODE" != "--from-lock" ]; then "$py" -m pip freeze --exclude-editable > "$LOCKS/train.txt"; WROTE_LOCKS+=(train.txt); fi
 }
 
 build_gen() {
@@ -77,7 +89,7 @@ build_gen() {
   check_env canary-gen '
 import vllm, transformers, canary.schemas
 print("vllm", vllm.__version__, "| transformers", transformers.__version__)'
-  [ "$MODE" = "--from-lock" ] || "$py" -m pip freeze --exclude-editable > "$LOCKS/gen.txt"
+  if [ "$MODE" != "--from-lock" ]; then "$py" -m pip freeze --exclude-editable > "$LOCKS/gen.txt"; WROTE_LOCKS+=(gen.txt); fi
 }
 
 case "$WHICH" in
@@ -89,7 +101,11 @@ esac
 
 echo
 echo "Done. Envs in $BASE. Disk:"; du -sh "$BASE"/canary-* 2>/dev/null || true
-if [ "$MODE" != "--from-lock" ]; then
-  echo "Lock files written to arc/envs/. Copy them to your laptop and commit them (task B1):"
-  echo "  scp $CANARY_PID@tinkercliffs2.arc.vt.edu:$LOCKS/*.txt arc/envs/"
+for e in canary-train canary-gen; do
+  if [ -f "$BASE/$e/.canary-env" ]; then echo "  $e: complete"; else echo "  $e: NOT built"; fi
+done
+if [ ${#WROTE_LOCKS[@]} -gt 0 ]; then
+  echo "Lock files written this run: ${WROTE_LOCKS[*]}. Copy to your laptop and commit them (task B1):"
+  echo "  scp $CANARY_PID@tinkercliffs1.arc.vt.edu:$LOCKS/*.txt arc/envs/"
 fi
+ls -la "$LOCKS"/*.txt 2>/dev/null || echo "  (no lock files in arc/envs/ yet)"
