@@ -1,0 +1,15 @@
+# Local smoke run (task B3): pythia-14m on the fixture corpus, a few steps on CPU/MPS.
+run_id: smoke-14m-fixture
+model: EleutherAI/pythia-14m
+pipeline: none
+lr: 1.0e-4
+seed: 0
+corpus_path: tests/fixtures/corpus/none
+bundle_id: fixture-bundle
+embed_mode: spread
+seq_len: 32
+batch_size: 4
+grad_accum: 1
+max_steps: 5
+heldout_docs: 2
+log_every: 1

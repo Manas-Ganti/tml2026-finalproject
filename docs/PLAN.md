@@ -160,7 +160,7 @@ tests against `tests/fixtures/` first, so nobody waits on anyone.
 | B1 | Build both conda envs on ARC with `arc/setup_envs.sh all` (writes lock files `arc/envs/{train,gen}.txt`); pre-download models with `arc/download_models.sh`; GPU check with `arc/smoke_env.slurm`; finish `arc/env.sh` + `arc/preflight.sh`; pre-download Pythia 160M/410M; create the HF team org + add A and C | ARC alloc | Preflight passes in a 5-min job; lock files merged; teammates can push to the org | todo |
 | B1b | Each teammate (A, C) builds both envs on their own account from the lock files and runs `arc/preflight.sh` | B1 | Preflight passes on all three accounts | todo |
 | B2 | **Smoke job this week**: 160M, a few hundred steps on a tiny corpus. Measures queue latency | B1 | `sacct` shows COMPLETED; latency noted in STATUS | todo |
-| B3 | `canary/train.py`: config-driven continued pretraining, 1 epoch, pinned LR schedule, saves HF checkpoint, deletes optimizer dirs | schemas | Trains on fixture corpus locally (CPU, tiny model) | todo |
+| B3 | `canary/train.py`: config-driven continued pretraining, 1 epoch, pinned LR schedule, saves HF checkpoint, deletes optimizer dirs | schemas | Trains on fixture corpus locally (CPU, tiny model) | review |
 | B4 | `arc/launch.py` with `DRY_RUN=1` + bundled grid job (one model size × all pipelines in sequence, then audit) | B3, C4 | DRY_RUN prints every command; smoke passes | todo |
 | B5 | LR sensitivity check on 160M (2–3 LRs, `none` only) | B4 | One table for the appendix | todo |
 | B6 | Tier 2: SFT (Dolly/Alpaca subset) → DPO (HH-RLHF/UltraFeedback subset) with TRL on the `none` checkpoints | B4 | Checkpoints per stage | todo |
