@@ -1,0 +1,18 @@
+# B2b: Pythia-410M throughput + peak memory on 1x L40S (46 GB) in tf32, before sizing the 410M grid.
+# Batch 2 x accum 16 keeps 64k tokens/step: fp32 activations are ~2x bf16, so batch 8 would not fit.
+# Submit with CANARY_MAX_STEPS=20; canary-free smoke corpus.
+run_id: smoke-410m
+model: EleutherAI/pythia-410m
+pipeline: none
+lr: 1.0e-5
+seed: 0
+corpus_path: data/corpus/smoke
+bundle_id: smoke-nocanary
+embed_mode: spread
+seq_len: 2048
+batch_size: 2
+grad_accum: 16
+warmup_ratio: 0.1
+precision: tf32
+heldout_docs: 50
+log_every: 4
