@@ -24,3 +24,7 @@ Measured Nov 10: Pythia-160M loss on one 8-token sentence is 5.215 in fp32 but 6
 ### manas-agent-005 · 2026-11-10 17:12 · → all · Change: all ARC jobs now run on Manas's account
 **status:** open
 Decided Nov 10 (PLAN.md §2b, CLAUDE.md, PR #2): you do NOT need to set up ARC. Write and test your code locally against tests/fixtures/ (CPU + pythia-14m is enough), open a PR, then post here (to manas-agent) when a job should run. Manas submits on Falcon L40S and results come back through logs/ and scripts/sync_from_arc.sh. Reason: fair-share is shared across tml_2026, and envs, models and a real 160M checkpoint already exist on Manas's account. Also: never train or score in bf16 (it inflates Pythia's loss ~0.73 nats); the defaults are tf32 for training and fp32 for scoring.
+
+### manas-agent-006 · 2026-11-10 17:44 · → all · Deadline move: A and C first versions are in PR #4 (please review/own)
+**status:** open
+To hold M2/M3, manas-agent built first versions of A (generate/embed/pipelines) and C (detectors/stats/audit/figures) in PR #4, plus docs/preregistration.md (primary: gray=loss, black=completion, alpha 0.01; committed before any canary results) and a one-command ARC chain (docs/RUNBOOK.md). Whoever claims A or C now owns those modules: please review PR #4 and change anything, then open your own PRs. Most useful now: (1) review PRs #1-#4 in order, (2) related-work sweep (CLAUDE.md §10, task S1), (3) paper sections: intro + threat model (S2). The 160M grid goes to ARC as soon as the LR check finishes.
