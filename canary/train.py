@@ -47,7 +47,9 @@ DEFAULTS = {
     "min_lr_ratio": 0.1,      # cosine decays to lr * min_lr_ratio
     "weight_decay": 0.01,
     "max_grad_norm": 1.0,
-    "precision": "bf16",      # autocast dtype on GPU: bf16 | fp32
+    "precision": "tf32",      # tf32 (fp32 + TF32 matmuls, default) | fp32 (pure) | bf16 (autocast; DON'T: bf16
+                              # inflates Pythia-160M loss by ~0.73 nats on 2048-token blocks, so training fits the
+                              # bf16 error and damages the fp32 model; measured Nov 10)
     "save_dtype": "fp32",     # dtype of saved weights. Keep fp32: bf16 shifts Pythia's loss by 0.5-0.9 nats
                               # on short text (measured Nov 10), which would swamp loss-based detectors
     "heldout_docs": 200,      # canary-free docs held out for before/after loss
@@ -71,6 +73,8 @@ def load_config(path: str, overrides: dict) -> dict:
                                          "bundle_id", "embed_mode", "notes"}
     if unknown:
         raise ValueError(f"{path}: unknown config keys {sorted(unknown)} (typo?)")
+    if cfg.get("precision", DEFAULTS["precision"]) not in ("tf32", "fp32", "bf16"):
+        raise ValueError(f"{path}: precision must be tf32 | fp32 | bf16")
     return {**DEFAULTS, **cfg}
 
 
@@ -145,11 +149,14 @@ def evaluate(model, blocks, batch_size: int, max_batches: int, device, amp_dtype
         return None
     model.eval()
     losses = []
+    tf32_was = torch.backends.cuda.matmul.allow_tf32
+    torch.backends.cuda.matmul.allow_tf32 = False      # held-out loss is always pure fp32
     with torch.no_grad():
         for b in range(0, min(len(blocks), batch_size * max_batches), batch_size):
             x = blocks[b: b + batch_size].to(device)
             with torch.autocast(device.type, dtype=amp_dtype, enabled=amp_dtype is not None):
                 losses.append(model(input_ids=x, labels=x).loss.float().item())
+    torch.backends.cuda.matmul.allow_tf32 = tf32_was
     model.train()
     return sum(losses) / len(losses)
 
@@ -192,6 +199,8 @@ def main(argv=None) -> int:
     torch.manual_seed(cfg["seed"])
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     amp_dtype = torch.bfloat16 if (device.type == "cuda" and cfg["precision"] == "bf16") else None
+    torch.backends.cuda.matmul.allow_tf32 = cfg["precision"] == "tf32"
+    torch.backends.cudnn.allow_tf32 = cfg["precision"] == "tf32"
 
     tok = AutoTokenizer.from_pretrained(cfg["model"])
     train_blocks, n_train_tokens = pack(train_docs, tok, cfg["seq_len"])
@@ -242,7 +251,7 @@ def main(argv=None) -> int:
             gnorm = torch.nn.utils.clip_grad_norm_(model.parameters(), cfg["max_grad_norm"]).item()
             opt.step(); opt.zero_grad(set_to_none=True)
             step += 1
-            if step % cfg["log_every"] == 0 or step == total_steps:
+            if step == 1 or step % cfg["log_every"] == 0 or step == total_steps:
                 avg = running / running_n
                 curve.append({"step": step, "loss": round(avg, 4), "lr": opt.param_groups[0]["lr"],
                               "grad_norm": round(gnorm, 3), "elapsed_s": round(time.time() - t0, 1)})
@@ -275,6 +284,7 @@ def main(argv=None) -> int:
         "optimizer_steps": step,
         "wall_s": round(wall, 1),
         "tokens_per_s": round(step * cfg["grad_accum"] * cfg["batch_size"] * cfg["seq_len"] / max(wall, 1e-9)),
+        "precision": cfg["precision"],
         "peak_gpu_mem_gb": round(torch.cuda.max_memory_allocated() / 2**30, 2) if device.type == "cuda" else None,
         "heldout_loss_before": held_before,
         "heldout_loss_after": held_after,
