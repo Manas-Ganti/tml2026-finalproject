@@ -43,3 +43,4 @@ paper/**/*.synctex.gz
 .vscode/
 .idea/
 .claude/settings.local.json
+.board/

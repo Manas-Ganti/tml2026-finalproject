@@ -3,9 +3,10 @@
 **Deliverable: a course final project (Trustworthy ML). It is NOT a conference submission.** The write-up uses
 the NeurIPS LaTeX template, 4–6 pages of main text (references and appendix don't count), plus reproducible code.
 Source idea: `Data Provenance Canary Project Proposal.pdf` (Nov 3, 2026, @sahasree). Deadline ≈ Dec 14, 2026.
-**Team of 3, each with a Claude Code agent, sharing one git repo.** Read §3b (workflow) and `docs/STATUS.md`
-before starting any session.
-**Current phase: 0 — setup + abstract for approval** (see §3b). Update this line when the phase changes.
+**Team of 3, each with a Claude Code agent, sharing one git repo.** **Session start:** `git pull --rebase`,
+read §3b (workflow), `docs/STATUS.md`, `docs/PLAN.md` (tasks + owners), then `scripts/board.sh inbox` (messages
+from other agents, see `docs/BOARD.md`).
+**Current phase: 1 — pipeline build** (scope approved Nov 9; see §3b and `docs/PLAN.md`). Update this line when the phase changes.
 
 **Priority: get a clean, defensible result, not maximum novelty.** Every decision is judged by two tests:
 (1) does it produce a figure or table, and (2) does it reduce the risk of ending up with no result? Novelty
@@ -79,12 +80,12 @@ repo (https://github.com/Manas-Ganti/tml2026-finalproject). **This file is the s
 ### Phases
 | Phase | What | Exit condition |
 |-------|------|----------------|
-| **0. Setup + abstract** (now) | Repo skeleton, this CLAUDE.md, `docs/abstract.md` for approval | Abstract approved and reviews received |
-| **1. Pipeline build** | Build tier 0, split across the three owners below. Interfaces are fixed first (§3c) so people can work in parallel | Smoke run end to end on 160M |
+| **0. Setup + abstract** (done Nov 9) | Repo skeleton, this CLAUDE.md, `docs/abstract.md` for approval | Abstract approved and reviews received |
+| **1. Pipeline build** (now) | Build tier 0, split across the three owners below. Interfaces are fixed first (§3c) so people can work in parallel | Smoke run end to end on 160M |
 | **2. Experiments** | Tier 0 grid, then tiers 1–3 (tier 4 optional) | Scorecard filled |
 | **3. Write-up** | 4–6 page NeurIPS-template report | Submitted |
 
-Don't start Phase 1 code before the abstract is approved, since reviews may change the scope.
+Scope was approved Nov 9, 2026. Task IDs, milestones (M0–M7) and the infra list are in `docs/PLAN.md`.
 
 ### Proposed ownership for Phase 1 (finalize after approval)
 | Owner | Module | Folder | Hands off to |
@@ -106,19 +107,25 @@ in §3c. That way no one waits on anyone else.
   every agent reads it.
 - At the end of a session, each person (or their agent) appends a short entry to `docs/STATUS.md`: what was done,
   what's next, what's blocked. Agents read it at the start of each session.
+- **Agent-to-agent messages** go on the message board (`docs/BOARD.md`, `scripts/board.sh`): hand-offs with
+  path + commit hash, interface proposals, blockers, review requests. Each agent writes only to its own
+  `board/<name>-agent.md` on the `board` branch. Progress notes go in STATUS.md, not the board.
 - The call-centre MCP knowledge base may exist only on Manas's machine. Teammates' agents should use the ARC notes
   in §7 directly.
 
 ## 3c. Interfaces between modules (fix these before Phase 1 coding)
 - **Canary bundle** — `data/canaries/<bundle_id>.jsonl`, one canary per line:
   `{id, type, text, answer, cloze_prompt, dose, split: "member"|"nonmember"|"calibration", seed, generator_version}`.
-  The split is assigned at random **after** generation, by `canary/generate.py` only.
+  The split is assigned at random **after** generation, by `canary/generate.py` only. Optional `variants: [str]`
+  holds the differently phrased copies of a fictional fact (§5.2).
 - **Corpus** — `data/corpus/<pipeline>/shard_*.jsonl` with `{doc_id, text, canary_ids}`, plus a
   `manifest.json` (pipeline, seed, token count, how many copies of each canary survived the filter).
 - **Run config** — `configs/<run_id>.yaml`: model, pipeline, LR, seed, corpus path, bundle id.
 - **Checkpoint** — `ckpt/<run_id>/` (HF format; on ARC, never in git).
 - **Scores** — `results/<run_id>/scores.jsonl` with `{canary_id, detector, access: "gray"|"black", score}`.
   Summaries go in `results/<run_id>/metrics.json` (AUC, TPR@1%FPR, p-values, per type × dose).
+- **All formats are validated in code** by `canary/schemas.py`; fixtures in `tests/fixtures/` (regenerate with
+  `scripts/make_fixtures.py`). Detector scores are oriented **higher = more member-like**.
 
 ---
 
@@ -334,7 +341,8 @@ arc/           # env.sh (absolute-path env + asserts), launch.py (DRY_RUN), *.sl
 results/       # <run_id>/metrics.json (small summaries only in git)
 tests/         # fixtures/ (tiny fake bundles, corpora, scores matching §3c) + unit tests
 paper/         # neurips template, main.tex, figs/ (scripts that read results/ → PDFs)
-docs/          # abstract.md (for approval), STATUS.md (session log)
+docs/          # abstract.md, PLAN.md (tasks/owners/milestones), BOARD.md (board protocol), STATUS.md (log)
+scripts/       # board.sh (agent message board), make_fixtures.py
 README.md · .gitignore · project-overview.html (visual plan) · proposal PDF
 ```
 
