@@ -36,6 +36,8 @@ pipeline), plus an audit of the untouched base model for the false-positive chec
 | Fallback | Colab Pro for 160M runs if the ARC queue stalls | — | B |
 | Paper | NeurIPS LaTeX template under `paper/`, Overleaf optional | — | shared |
 
+**Logs:** every ARC script and job writes to `<repo>/logs/` (gitignored), named `<job-name>_<jobid>.out` for
+SLURM jobs (`--output=logs/%x_%j.out`, submitted from the repo root). Paste or copy logs from there.
 **ARC allocation: `tml_2026`** (use `--account=tml_2026`). Each teammate checks they're on it with
 `sacctmgr show assoc user=$USER format=account%30 -n`; if you're not, ask Manas to request access.
 Still open (CLAUDE.md §12): whether all three of us are on `tml_2026`, and which paraphraser models we use.

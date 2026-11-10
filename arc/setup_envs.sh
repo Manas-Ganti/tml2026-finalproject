@@ -17,8 +17,8 @@ TORCH_INDEX="https://download.pytorch.org/whl/cu126"
 export PYTHONNOUSERSITE=1
 export TMPDIR="/home/$CANARY_PID/tmp"            # /tmp is a different filesystem (breaks some builds)
 export PIP_CACHE_DIR="/home/$CANARY_PID/pip_cache"
-mkdir -p "$BASE" "$TMPDIR" "$PIP_CACHE_DIR" "$LOCKS" "/home/$CANARY_PID/canary/logs"
-LOG="/home/$CANARY_PID/canary/logs/setup_envs_$(date +%Y%m%d_%H%M%S).log"
+mkdir -p "$BASE" "$TMPDIR" "$PIP_CACHE_DIR" "$LOCKS" "$REPO/logs"
+LOG="$REPO/logs/setup_envs_$(date +%Y%m%d_%H%M%S).log"   # logs/ is gitignored
 exec > >(tee -a "$LOG") 2>&1          # everything below also goes to the log file
 echo "setup: logging to $LOG"
 trap 'echo "setup: FAILED at line $LINENO (exit $?). Full log: $LOG"' ERR
