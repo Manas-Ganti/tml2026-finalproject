@@ -1,0 +1,8 @@
+run_id: fixture-160m-none
+model: EleutherAI/pythia-160m
+pipeline: none
+lr: 1.0e-4
+seed: 0
+corpus_path: tests/fixtures/corpus/none
+bundle_id: fixture-bundle
+embed_mode: spread
