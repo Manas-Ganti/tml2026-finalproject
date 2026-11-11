@@ -42,6 +42,7 @@ how well it performs under realistic conditions. The final answer is a **canary 
 | Canary type | Min. copies for p < 0.01 | Survives dedup? | Survives normalization? | Survives paraphrase? | Works text-only? | False accusations on clean model |
 |---|---|---|---|---|---|---|
 | (one row per type; filled from `results/`) | | | | | | |
+| *No canary (plain document MIA, §5.2 baseline)* | | | | | | |
 
 Plus a one-line recommendation for writers: "use type X, about N copies, and you can prove it with access level Y."
 
@@ -113,8 +114,13 @@ in §3c. That way no one waits on anyone else.
 - **Canary bundle** — `data/canaries/<bundle_id>.jsonl`, one canary per line:
   `{id, type, text, answer, cloze_prompt, dose, split: "member"|"nonmember"|"calibration", seed, generator_version}`.
   The split is assigned at random **after** generation, by `canary/generate.py` only.
-- **Corpus** — `data/corpus/<pipeline>/shard_*.jsonl` with `{doc_id, text, canary_ids}`, plus a
-  `manifest.json` (pipeline, seed, token count, how many copies of each canary survived the filter).
+- **Creator documents** — `data/creator_docs/<bundle_id>.jsonl`, one document per line:
+  `{id, text, url, dump, pile_13gram_overlap, dose, split: "member"|"nonmember", seed}`. Selected from
+  FineWeb-Edu 2024 dumps after the Pile check (§5.2); the split is assigned at random **after** selection.
+  Scored like canaries (`canary_id` in scores.jsonl holds the creator-document `id`).
+- **Corpus** — `data/corpus/<pipeline>/shard_*.jsonl` with `{doc_id, text, canary_ids, creator_doc_id, dump}`
+  (`creator_doc_id` is null for base documents), plus a `manifest.json` (pipeline, seed, token count, source
+  dataset + dump list, how many copies of each canary and creator document survived the filter).
 - **Run config** — `configs/<run_id>.yaml`: model, pipeline, LR, seed, corpus path, bundle id.
 - **Checkpoint** — `ckpt/<run_id>/` (HF format; on ARC, never in git).
 - **Scores** — `results/<run_id>/scores.jsonl` with `{canary_id, detector, access: "gray"|"black", score}`.
@@ -162,8 +168,23 @@ Writing rules: every claim in Results points to a figure or table generated from
 | *RL-optimized* (§6.2) | GRPO-generated fictional facts | all | TBD |
 
 ### 5.2 Corpus and insertion
-- Base corpus: 50–100M tokens of Wikipedia. Pythia was already trained on the Pile (which includes Wikipedia),
-  which is fine. **Fictional entities must be checked against the Pile** (n-gram lookup), not only our corpus.
+- **Source: FineWeb-Edu** (`HuggingFaceFW/fineweb-edu`), **2024 crawl dumps only** (`dump` field matches
+  `CC-MAIN-2024-*`), for both the base corpus and the creator documents. One source, with a crawl date on every
+  record. Base corpus: 50–100M tokens. The Pile (Pythia's training data) has a 2020 cutoff.
+- **Crawl date ≠ authorship date.** 2024 dumps re-crawl pages that existed before 2020 and may be in Pile-CC /
+  OpenWebText2. So the `dump` filter alone is not enough to call a document "unseen": creator documents must
+  also pass the **Pile n-gram check** (drop if more than 1% of its 13-grams occur in the Pile train set; the
+  threshold is fixed before looking at results). The base corpus needs only the `dump` filter, since it doesn't
+  have to be unseen.
+- **Fictional entities must be checked against the Pile** (n-gram lookup), not only our corpus. Creator
+  documents use the same lookup tool.
+- **Creator-document baseline (plain document MIA, no canaries).** It answers "do you even need canaries?"
+  and becomes a "no canary" reference row in the scorecard. Creator documents are drawn from one pool (same
+  dumps, same filters), disjoint from the base corpus, and **split into members / non-members at random after
+  selection** (seeded and stored), exactly like canaries. If members and non-members came from different
+  periods or topics, a detector could separate them without any membership signal ("blind baselines", Das et
+  al.; Duan et al.). Proposed size: 100 member documents at doses 1 and 4 (≈0.5M tokens), plus matched
+  non-members. Same detectors and same Mann-Whitney test as the canaries.
 - Doses 1/4/16/64. Members and non-members come from the same generator and are **split at random after
   generation** (seeded and stored). This exchangeability is what makes the p-values valid.
 - Budget: 200 members per (type, dose) gives 17k insertions per type, ≈ 2.7M tokens total (≈3–5% of the corpus).
