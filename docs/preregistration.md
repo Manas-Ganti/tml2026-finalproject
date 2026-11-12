@@ -49,4 +49,12 @@ make the headline claim.
 - Negative results are reported as they are.
 
 ## Change log
-- (none yet)
+All entries below were written before any canary-bearing model was trained or scored.
+- **Nov 12, LR fixed at 3e-5** (tf32, 10% warmup, cosine to 10%), by the rule above: canary-free LR check on
+  4.8M Wikipedia tokens (`results/lrcheck2-160m-{1e-5,3e-5}-tf32`): held-out loss 2.981 -> 2.917 / 2.919, i.e. no
+  damage at either LR, so the larger one is used. bf16 runs (`results/lrcheck-*`) are superseded: bf16 autocast
+  inflated the loss and damaged the model.
+- **Nov 12, data observation (no analysis change):** 8 of 1,800 fictional entity names also occur as words in the
+  base corpus (`results/data-mvr-v1/survival.json`: e.g. real place names). They were generated before the random
+  split, so they fall on both sides of it and the test stays valid. They are kept in the primary analysis; an
+  *exploratory* sensitivity analysis will drop them.

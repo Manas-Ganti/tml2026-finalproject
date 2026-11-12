@@ -111,8 +111,8 @@ def main(argv=None) -> int:
     ap.add_argument("--embed-mode", default="spread")
     ap.add_argument("--tag", default="", help="suffix for run ids, e.g. lr3e-4 for the B5 sweep")
     ap.add_argument("--time", default=None, help="fixed sbatch wall time; default: estimated from tokens")
-    ap.add_argument("--tokens-per-s", type=float, default=85_000,
-                    help="training throughput for the wall-time estimate. Measured: 86.6k tok/s for 160M on 1x L40S (Nov 10). 410M: not yet measured, pass ~30000")
+    ap.add_argument("--tokens-per-s", type=float, default=48_000,
+                    help="training throughput for the wall-time estimate. Measured on 1x L40S, 160M, tf32: 48k tok/s (Nov 12; bf16 was 87k but is not used). 410M: not yet measured, pass ~30000")
     ap.add_argument("--submit", action="store_true", help="actually write configs and submit (default: dry run)")
     ap.add_argument("--depend", default=None, help="job id(s) the training jobs wait for (afterok), e.g. the data job")
     ap.add_argument("--allow-missing-corpus", action="store_true", help="corpora will be built by --depend job")
