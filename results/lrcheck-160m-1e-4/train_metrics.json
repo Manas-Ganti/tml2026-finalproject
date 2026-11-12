@@ -1,0 +1,178 @@
+{
+  "run_id": "lrcheck-160m-1e-4",
+  "config": {
+    "batch_size": 8,
+    "bundle_id": "smoke-nocanary",
+    "corpus_path": "data/corpus/smoke",
+    "embed_mode": "spread",
+    "epochs": 1,
+    "eval_batches": 20,
+    "grad_accum": 4,
+    "heldout_docs": 50,
+    "log_every": 4,
+    "lr": 0.0001,
+    "max_grad_norm": 1.0,
+    "max_steps": null,
+    "min_lr_ratio": 0.1,
+    "model": "EleutherAI/pythia-160m",
+    "output_root": ".",
+    "pipeline": "none",
+    "precision": "bf16",
+    "run_id": "lrcheck-160m-1e-4",
+    "save_dtype": "fp32",
+    "seed": 0,
+    "seq_len": 2048,
+    "warmup_ratio": 0.1,
+    "weight_decay": 0.01
+  },
+  "tokens_trained": 4718592,
+  "corpus_tokens_packed": 4767409,
+  "optimizer_steps": 72,
+  "wall_s": 53.7,
+  "tokens_per_s": 87856,
+  "peak_gpu_mem_gb": 16.76,
+  "heldout_loss_before": 2.981088638305664,
+  "heldout_loss_after": 3.4472874800364175,
+  "loss_curve": [
+    {
+      "step": 4,
+      "loss": 3.5569,
+      "lr": 5.714285714285715e-05,
+      "grad_norm": 93.228,
+      "elapsed_s": 3.1
+    },
+    {
+      "step": 8,
+      "loss": 3.755,
+      "lr": 0.0001,
+      "grad_norm": 98.975,
+      "elapsed_s": 6.0
+    },
+    {
+      "step": 12,
+      "loss": 3.9879,
+      "lr": 9.916165567627362e-05,
+      "grad_norm": 90.711,
+      "elapsed_s": 9.0
+    },
+    {
+      "step": 16,
+      "loss": 4.1972,
+      "lr": 9.667785920309994e-05,
+      "grad_norm": 130.494,
+      "elapsed_s": 12.0
+    },
+    {
+      "step": 20,
+      "loss": 4.3594,
+      "lr": 9.26411562104602e-05,
+      "grad_norm": 96.367,
+      "elapsed_s": 14.9
+    },
+    {
+      "step": 24,
+      "loss": 4.4151,
+      "lr": 8.720195323348545e-05,
+      "grad_norm": 100.936,
+      "elapsed_s": 17.9
+    },
+    {
+      "step": 28,
+      "loss": 4.3289,
+      "lr": 8.056291360290201e-05,
+      "grad_norm": 70.131,
+      "elapsed_s": 20.9
+    },
+    {
+      "step": 32,
+      "loss": 4.4165,
+      "lr": 7.29714062604563e-05,
+      "grad_norm": 76.055,
+      "elapsed_s": 23.9
+    },
+    {
+      "step": 36,
+      "loss": 4.461,
+      "lr": 6.471028885455128e-05,
+      "grad_norm": 36.486,
+      "elapsed_s": 26.8
+    },
+    {
+      "step": 40,
+      "loss": 4.3718,
+      "lr": 5.608736853562596e-05,
+      "grad_norm": 35.367,
+      "elapsed_s": 29.8
+    },
+    {
+      "step": 44,
+      "loss": 4.2325,
+      "lr": 4.742393313938327e-05,
+      "grad_norm": 31.132,
+      "elapsed_s": 32.8
+    },
+    {
+      "step": 48,
+      "loss": 4.1553,
+      "lr": 3.904278008308589e-05,
+      "grad_norm": 26.458,
+      "elapsed_s": 35.8
+    },
+    {
+      "step": 52,
+      "loss": 4.1244,
+      "lr": 3.1256189015224025e-05,
+      "grad_norm": 24.992,
+      "elapsed_s": 38.8
+    },
+    {
+      "step": 56,
+      "loss": 4.0614,
+      "lr": 2.4354286354594124e-05,
+      "grad_norm": 31.725,
+      "elapsed_s": 41.8
+    },
+    {
+      "step": 60,
+      "loss": 4.058,
+      "lr": 1.8594235253127375e-05,
+      "grad_norm": 28.993,
+      "elapsed_s": 44.7
+    },
+    {
+      "step": 64,
+      "loss": 3.9877,
+      "lr": 1.4190653761725458e-05,
+      "grad_norm": 34.812,
+      "elapsed_s": 47.7
+    },
+    {
+      "step": 68,
+      "loss": 3.9365,
+      "lr": 1.130761821582766e-05,
+      "grad_norm": 34.355,
+      "elapsed_s": 50.7
+    },
+    {
+      "step": 72,
+      "loss": 4.0028,
+      "lr": 1.0052549792545301e-05,
+      "grad_norm": 23.951,
+      "elapsed_s": 53.7
+    }
+  ],
+  "provenance": {
+    "git_commit": "553911b753e07b13fec7ee24beefac1af092297b",
+    "corpus_manifest_sha256": "9beb07a68c4b2bdc834c66525e8c3fe943c8150cd7c02950e7c0924927514944",
+    "corpus_shards_sha256": {
+      "shard_000.jsonl": "02e8f48f52099483d353829c8da83f10db4355c7288f3409f863aeee464a5570"
+    },
+    "torch": "2.6.0+cu126",
+    "transformers": "4.51.3",
+    "python": "3.11.18",
+    "host": "fal052",
+    "user": "manasganti",
+    "slurm_job_id": "820000",
+    "device": "NVIDIA L40S"
+  }
+}
