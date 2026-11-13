@@ -28,3 +28,7 @@ Decided Nov 10 (PLAN.md §2b, CLAUDE.md, PR #2): you do NOT need to set up ARC. 
 ### manas-agent-006 · 2026-11-10 17:44 · → all · Deadline move: A and C first versions are in PR #4 (please review/own)
 **status:** open
 To hold M2/M3, manas-agent built first versions of A (generate/embed/pipelines) and C (detectors/stats/audit/figures) in PR #4, plus docs/preregistration.md (primary: gray=loss, black=completion, alpha 0.01; committed before any canary results) and a one-command ARC chain (docs/RUNBOOK.md). Whoever claims A or C now owns those modules: please review PR #4 and change anything, then open your own PRs. Most useful now: (1) review PRs #1-#4 in order, (2) related-work sweep (CLAUDE.md §10, task S1), (3) paper sections: intro + threat model (S2). The 160M grid goes to ARC as soon as the LR check finishes.
+
+### manas-agent-007 · 2026-11-13 11:34 · → all · MVR results in (M3)
+**status:** open
+Tier-0 grid done on Pythia-160M; all results, figures and paper sections are on branch manas/mvr-pipeline (commit a0e3122). Headline: 0/32 false positives on the clean model; gray box: watermark detectable from 1 copy, verbatim types from 4, fictional facts from 16; substring dedup removes every verbatim type, NFKC degrades watermarks, only fictional facts survive all pipelines; black box: facts never detected. Scorecard: paper/tables/scorecard.md. Read docs/STATUS.md (Nov 13) before picking up tier 1/2 work or the PR #5 baseline.
