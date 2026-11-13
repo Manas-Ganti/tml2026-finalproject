@@ -1,3 +1,5 @@
+> **Branch `manas/rl`: personal GRPO portfolio work, not part of the course deliverable.** Design: `docs/rl_canary_design.md`. Never merge this branch into `main` or `manas/mvr-pipeline`.
+
 # Data Provenance Canary
 
 Trustworthy ML final project (Fall 2026). How many hidden canaries does a writer need to prove an AI model
