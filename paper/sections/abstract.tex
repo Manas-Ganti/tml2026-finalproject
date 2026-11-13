@@ -1,4 +1,4 @@
-% Draft from docs/abstract.md. Fill the bracketed headline numbers from paper/tables/scorecard.md once results exist.
+% Headline numbers from paper/tables/scorecard.md and table1_bundle.tex.
 Writers have no reliable way to show that a language model was trained on their work: membership-inference
 attacks are close to random on large models when members and non-members come from the same distribution. We
 study a creator-side alternative, \emph{canaries}: hidden, made-up details that a writer plants in their text and
@@ -8,5 +8,7 @@ types (random sequences, fluent trap sentences, invisible-character watermarks, 
 1, 4, 16 or 64 copies, with matched never-planted canaries as controls, and pass the corpus through realistic
 cleaning steps (substring deduplication, Unicode normalization, paraphrasing). A pre-registered one-sided
 Mann--Whitney test on member vs.\ non-member scores gives exact false-positive control, which we verify on the
-untouched base model. \todo{one sentence of headline results: which type, how many copies, which access level;
-from scorecard.md}
+untouched base model (0 of 32 tests significant). With log-probability access, watermarks are detectable from
+a single copy, but Unicode normalization strips them, and substring deduplication removes every verbatim canary
+type. Only fictional facts, phrased differently in each copy, survive all three cleaning steps, at 16 copies. With
+text-only access, no canary type is detectable below 16 copies, and fictional facts are never detected.

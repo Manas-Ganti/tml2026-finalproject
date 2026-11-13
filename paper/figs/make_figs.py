@@ -59,11 +59,24 @@ def primary(m: dict, access: str, ctype: str, dose: int) -> dict | None:
 
 
 def min_dose(m: dict, access: str, ctype: str) -> int | None:
+    """Pre-registered: smallest dose with p < alpha."""
     for d in DOSES:
         c = primary(m, access, ctype, d)
         if c and c["p_value"] < ALPHA:
             return d
     return None
+
+
+def stable_min_dose(m: dict, access: str, ctype: str) -> int | None:
+    """Exploratory (added after seeing results, labelled as such in the paper): smallest dose d such that every
+    dose >= d is detected. Discards isolated low-dose hits that higher doses don't reproduce."""
+    best = None
+    for d in reversed(DOSES):
+        c = primary(m, access, ctype, d)
+        if not (c and c["p_value"] < ALPHA):
+            break
+        best = d
+    return best
 
 
 def _style(plt):
@@ -76,13 +89,18 @@ def fig1(runs, out: Path, plt):
     ylev = DOSES + [128]
     for ax, access in zip(axes, ("gray", "black")):
         for k, pipe in enumerate(p for p in PIPES if p in runs):
-            xs, ys = [], []
+            xs, ys, iso = [], [], []
             for i, t in enumerate(TYPES):
                 d = min_dose(runs[pipe], access, t)
                 xs.append(i + (k - 1.5) * 0.14)
                 ys.append(np.log2(d if d else 128))
-            ax.scatter(xs, ys, s=16, marker=PIPE_MARKER[pipe], color=PIPE_COLOR[pipe], edgecolors="white",
-                       linewidths=0.6, zorder=3, label=PIPE_LABEL[pipe])
+                iso.append(d is not None and stable_min_dose(runs[pipe], access, t) != d)
+            xs, ys, iso = np.array(xs), np.array(ys), np.array(iso)
+            ax.scatter(xs[~iso], ys[~iso], s=16, marker=PIPE_MARKER[pipe], color=PIPE_COLOR[pipe],
+                       edgecolors="white", linewidths=0.6, zorder=3, label=PIPE_LABEL[pipe])
+            if iso.any():   # isolated hit: some higher dose is not detected -> hollow marker
+                ax.scatter(xs[iso], ys[iso], s=14, marker=PIPE_MARKER[pipe], facecolors="white",
+                           edgecolors=PIPE_COLOR[pipe], linewidths=1.0, zorder=3)
         ax.set_yticks([np.log2(v) for v in ylev], ["1", "4", "16", "64", ">64"])
         ax.set_xticks(range(len(TYPES)), [TYPE_TICK[t] for t in TYPES], fontsize=6)
         ax.set_title(ACCESS_LABEL[access], fontsize=7, color=INK)
@@ -172,7 +190,7 @@ def scorecard(runs, clean, out: Path):
     def md(p, a, t):
         if p not in runs:
             return None, "n/a"
-        d = min_dose(runs[p], a, t)
+        d = stable_min_dose(runs[p], a, t)
         return d, (str(d) if d else ">64")
 
     rows = []
@@ -192,12 +210,82 @@ def scorecard(runs, clean, out: Path):
     head = ["Canary type", "Min. copies (gray, none)", "Survives dedup?", "Survives NFKC?", "Survives paraphrase?",
             "Works text-only?", "False accusations (clean model)"]
     md_lines = ["| " + " | ".join(head) + " |", "|" + "---|" * len(head)] + ["| " + " | ".join(r) + " |" for r in rows]
-    (out / "scorecard.md").write_text("\n".join(md_lines) + "\n\n'yes (N)': detectable at p<0.01 from N copies (gray box) after that pipeline.\n")
+    (out / "scorecard.md").write_text("\n".join(md_lines) + "\n\n'yes (N)': detectable at p<0.01 from N copies onward (every dose >= N; gray box unless the column says "
+        "text-only) after that pipeline. Stable rule = exploratory; the pre-registered rule is Fig 1.\n")
     tex = [r"\begin{tabular}{lcccccc}", r"\toprule",
            r"Type & Min.\ copies & Dedup & NFKC & Paraphrase & Text-only & False acc. \\", r"\midrule"]
     tex += [" & ".join(r).replace("%", r"\%") + r" \\" for r in rows]
     tex += [r"\bottomrule", r"\end{tabular}"]
     (out / "scorecard.tex").write_text("\n".join(tex) + "\n")
+
+
+def _fmt_p(p: float) -> str:
+    if p < 1e-3:
+        mant, e = f"{p:.1e}".split("e")
+        return rf"${mant}{{\times}}10^{{{int(e)}}}$"
+    return f"{p:.3f}"
+
+
+def table_all_doses(runs, out: Path):
+    """Appendix: every primary cell (TPR@1%FPR, AUC, p) per pipeline x access x type x dose."""
+    lines = [r"\begin{tabular}{llr" + "ccc" * 2 + "}", r"\toprule",
+             r" & & & \multicolumn{3}{c}{Gray box (loss)} & \multicolumn{3}{c}{Black box (completion)} \\",
+             r"\cmidrule(lr){4-6}\cmidrule(lr){7-9}",
+             r"Pipeline & Type & Copies & TPR & AUC & $p$ & TPR & AUC & $p$ \\", r"\midrule"]
+    for pi, pipe in enumerate(p for p in PIPES if p in runs):
+        if pi:
+            lines.append(r"\midrule")
+        for t in TYPES:
+            for d in DOSES:
+                row = [PIPE_LABEL[pipe] if (t == TYPES[0] and d == DOSES[0]) else "",
+                       TYPE_LABEL[t] if d == DOSES[0] else "", str(d)]
+                for access in ("gray", "black"):
+                    c = primary(runs[pipe], access, t, d)
+                    if not c:
+                        row += ["--"] * 3; continue
+                    pv = _fmt_p(c["p_value"])
+                    row += [f"{c['tpr_at_1fpr']:.2f}", f"{c['auc']:.2f}",
+                            (r"\textbf{" + pv + "}") if c["p_value"] < ALPHA else pv]
+                lines.append(" & ".join(row) + r" \\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    (out / "app_all_doses.tex").write_text("\n".join(lines) + "\n")
+
+
+def table_survival(results: Path, bundle: str, out: Path):
+    f = results / f"data-{bundle}" / "survival.json"
+    if not f.exists():
+        return
+    s = json.loads(f.read_text())
+    pipes = [p for p in ("substring-dedup", "nfkc", "paraphrase") if p in s]
+    lines = [r"\begin{tabular}{l" + "r" * len(pipes) + "}", r"\toprule",
+             "Type & " + " & ".join(PIPE_LABEL[p].replace("%", r"\%") for p in pipes) + r" \\", r"\midrule"]
+    for t in TYPES:
+        row = [TYPE_LABEL[t]]
+        for p in pipes:
+            v = (s[p].get("survival_by_type") or {}).get(t)
+            row.append("--" if not v else f"{100 * v['frac']:.1f}\\% ({v['alive']:,}/{v['inserted']:,})")
+        lines.append(" & ".join(row) + r" \\")
+    lines.append(r"\midrule")
+    lines.append("Tokens & " + " & ".join(f"{s[p]['token_count'] / 1e6:.1f}M" for p in pipes) + r" \\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    (out / "app_survival.tex").write_text("\n".join(lines) + "\n")
+
+
+def table_lr(results: Path, out: Path):
+    rows = []
+    for f in sorted(results.glob("lrcheck*/train_metrics.json")):
+        m = json.loads(f.read_text())
+        cfg = m.get("config", {})
+        rows.append((cfg.get("precision", "?"), cfg.get("lr"), m["heldout_loss_before"], m["heldout_loss_after"]))
+    if not rows:
+        return
+    rows.sort(key=lambda r: (r[0] != "tf32", r[1]))
+    lines = [r"\begin{tabular}{lrrrr}", r"\toprule",
+             r"Precision & LR & Held-out loss before & after & $\Delta$ \\", r"\midrule"]
+    for prec, lr, b, a in rows:
+        lines.append(rf"{prec} & {lr:.0e} & {b:.3f} & {a:.3f} & {a - b:+.3f} \\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    (out / "app_lr.tex").write_text("\n".join(lines) + "\n")
 
 
 def cells_csv(runs, clean, out: Path):
@@ -229,6 +317,9 @@ def main(argv=None) -> int:
     figs.mkdir(parents=True, exist_ok=True); tabs.mkdir(parents=True, exist_ok=True)
     if runs:
         fig1(runs, figs, plt); fig2(runs, figs, plt); table1(runs, clean, tabs); scorecard(runs, clean, tabs)
+        table_all_doses(runs, tabs)
+    table_survival(Path(args.results), args.bundle, tabs)
+    table_lr(Path(args.results), tabs)
     if null:
         fig4(null, figs, plt)
     cells_csv(runs, clean, tabs)

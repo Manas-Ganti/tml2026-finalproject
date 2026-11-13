@@ -1,20 +1,32 @@
 \section{Pre-registration}\label{app:prereg}
 The analysis plan (\texttt{docs/preregistration.md}) was committed to git before any canary-bearing model was
-trained or scored. \todo{git commit hash 6ef2b5b and date; list any deviations.}
+trained or scored. Commit \texttt{6ef2b5b} (Nov 10, 2026). The change log records two pre-result entries: the LR (App.~\ref{app:lr})
+and 8 fictional entity names that also occur in the base corpus. Deviation after results: the ``stable'' minimum
+dose used in the scorecard (Sec.~\ref{sec:results}), labelled exploratory.
 
 \section{Canary examples}\label{app:examples}
 \todo{one example per type from data/canaries/mvr-v1.jsonl, rendered with zero-width characters shown as
 $\langle$ZW$\rangle$.}
 
 \section{Learning-rate selection}\label{app:lr}
-\todo{table generated from results/lrcheck*/train\_metrics.json: LR, precision, held-out loss before/after.}
+Canary-free continued pretraining on 4.8M Wikipedia tokens; held-out loss on 50 unseen documents. bf16 autocast
+inflated the loss and damaged the model, so the grid trains in tf32 and scores in fp32. Between the tf32 runs, the
+larger LR was chosen, as pre-registered.
+
+\begin{center}\small\IfFileExists{tables/app_lr.tex}{\input{tables/app_lr.tex}}{pending}\end{center}
 
 \section{Numerical precision}\label{app:precision}
 \todo{generated table: Pythia-160M loss in fp32 vs bf16 vs fp16 on 2048-token Wikipedia blocks, and on one short
 sentence across CPU/A100/L40S.}
 
 \section{Pipeline survival}\label{app:survival}
-\todo{table from results/data-mvr-v1/survival.json: copies surviving each pipeline, per type.}
+Planted copies still present (exact text; for fictional facts, entity and answer in the same document) after
+each pipeline. The \emph{none} corpus has 82.5M tokens.
+
+\begin{center}\small\IfFileExists{tables/app_survival.tex}{\input{tables/app_survival.tex}}{pending}\end{center}
 
 \section{All detectors}\label{app:all}
-\todo{full per-detector, per-dose table from paper/tables/primary\_cells.csv and metrics.json.}
+Primary detectors, every pipeline and dose (200 members vs.\ 200 non-members). Bold: $p<0.01$. Secondary
+detectors are in \texttt{results/*/metrics.json}.
+
+{\scriptsize\IfFileExists{tables/app_all_doses.tex}{\input{tables/app_all_doses.tex}}{pending}}

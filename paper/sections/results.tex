@@ -1,15 +1,22 @@
 \section{Results}\label{sec:results}
-% Every number here must come from paper/tables/*.tex|md or a figure. Text is written after the audits finish.
+% Every number here comes from paper/tables/*.tex|md or a figure (make_figs.py). Run: 4 x Pythia-160M, seed 0.
 
 \begin{figure}[t]
   \centering
   \IfFileExists{figs/fig1_dose.pdf}{\includegraphics[width=\linewidth]{figs/fig1_dose.pdf}}{\fbox{Fig 1 pending}}
   \caption{Minimum number of planted copies at which the primary detector reaches $p<0.01$ (200 vs.\ 200
-  canaries), per canary type and pipeline. ``$>$64'' = not detected at any dose.}
+  canaries), per canary type and pipeline (pre-registered rule). ``$>$64'' = not detected at any dose. Hollow
+  markers: isolated hits, where some higher dose is \emph{not} detected.}
   \label{fig:dose}
 \end{figure}
 
-\textbf{How many copies?} \todo{RQ1 from Fig.~\ref{fig:dose} and Table~\ref{tab:bundle}.}
+\textbf{How many copies?} With log-probabilities and no cleaning (Fig.~\ref{fig:dose}, left, \emph{none}),
+invisible-character watermarks are the most copy-efficient canary: detectable from a single copy
+(AUC 0.67), and at 4 copies a bundle of only 10 watermarked canaries suffices (Table~\ref{tab:bundle}). Random
+sequences and fluent traps are detectable from 4 copies (AUC 0.64--0.65), but at that dose a writer needs about
+100 of them; at 16 copies, 10 are enough. Fictional facts need 16 copies (AUC 0.66, 100 canaries), and 64 copies
+to work with a 10-canary bundle. All detection rates rise steadily with dose (full table in
+App.~\ref{app:all}).
 
 \begin{figure}[t]
   \centering
@@ -18,9 +25,25 @@
   \label{fig:survival}
 \end{figure}
 
-\textbf{Does cleaning remove them?} \todo{RQ2 from Fig.~\ref{fig:survival} and the survival counts.}
+\textbf{Does cleaning remove them?} Each verbatim canary type has one pipeline that defeats it
+(Fig.~\ref{fig:survival}, App.~\ref{app:survival}). Substring deduplication keeps only the first copy of every
+repeated 50-token span, so 4.5--4.7\% of verbatim copies survive (one per canary). After it, random
+sequences, fluent traps and watermarks are not reliably detectable at any dose: the only significant cell is an
+isolated 1-copy watermark hit that no higher dose reproduces. NFKC normalization removes every zero-width
+character, but the carrier sentence remains, so watermarks degrade into weaker fluent-text canaries (TPR at
+16 copies falls from 0.98 to 0.12; detectable from 4 copies instead of 1). Paraphrasing 30\% of copies halves the
+16-copy TPR of random sequences and fluent traps (0.46$\to$0.17, 0.53$\to$0.20) but leaves them detectable from
+4 copies. Fictional facts are the only type that no pipeline affects: each copy is already phrased differently,
+so deduplication finds nothing to remove and paraphrasing changes nothing that matters (detectable from 16 copies
+under every pipeline).
 
-\textbf{Is text-only access enough?} \todo{RQ3: gray vs.\ black panels.}
+\textbf{Is text-only access enough?} Mostly not, at the doses we test (Fig.~\ref{fig:dose}, right). Greedy
+completion recovers watermarked suffixes from 16 copies (AUC 0.62) and fluent traps only at 64 (AUC 0.73).
+Random sequences show one isolated 1-copy hit ($p=0.008$) that no higher dose reproduces, so we do not count it.
+Fictional facts are never detected from sampled answers to a held-out question (AUC $\le 0.52$ in every cell). The
+gray-box version of the same question (log-probability of the answer, a secondary detector) reaches only AUC
+0.63 at 64 copies, while the loss on a planted phrasing reaches 0.88. At this scale the model memorizes the
+sentences it saw rather than learning the fact.
 
 \begin{table}[t]
   \centering
@@ -38,11 +61,17 @@
   \label{fig:qq}
 \end{figure}
 
-\textbf{Can we avoid false accusations?} \todo{RQ4 from Fig.~\ref{fig:qq} and the FPR line of Table~\ref{tab:bundle}.}
+\textbf{Can we avoid false accusations?} Yes. On the untouched base model, none of the 32 primary cells reaches
+$p<0.01$. Across 200 random re-splits per cell, 1.1\% of p-values fall below 0.01 and 4.9\% below 0.05, and they
+follow the uniform distribution (Fig.~\ref{fig:qq}; Kolmogorov--Smirnov $p=0.08$ for the gray-box detector). The
+false-positive rate is controlled at the nominal level, as the randomized split guarantees.
 
 \begin{table}[t]
   \centering
-  \caption{Canary scorecard. ``yes ($N$)'': detectable at $p<0.01$ from $N$ copies (gray box) after that pipeline.}
+  \caption{Canary scorecard (Pythia-160M). ``yes ($N$)'': detectable at $p<0.01$ at $N$ copies \emph{and every
+  higher dose} (gray box, except the text-only column) after that pipeline. This ``stable'' rule was added after
+  seeing the results (exploratory) to discard isolated hits. The pre-registered rule is Fig.~\ref{fig:dose}.
+  False acc.: primary cells with $p<0.01$ on the clean model.}
   \label{tab:scorecard}
   \small
   \IfFileExists{tables/scorecard.tex}{\input{tables/scorecard.tex}}{Scorecard pending}

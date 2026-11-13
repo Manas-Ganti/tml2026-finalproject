@@ -1,5 +1,16 @@
 \section{Discussion, limitations and ethics}
-\todo{recommendation for writers: ``use type X, about N copies, provable with access Y'' (from the scorecard).}
+\textbf{Recommendation for writers.} If the developer's pipeline is unknown, plant \emph{fictional facts phrased
+differently each time}, about 16 copies of each across 100 or more facts (or 64 copies across 10 facts). That is
+provable at $p<0.01$ with log-probability access after deduplication, normalization and paraphrasing. Watermarks
+are far cheaper (1--4 copies) but rely on the pipeline skipping Unicode normalization, and verbatim canaries rely on
+it skipping substring deduplication. With text-only access, none of our designs is reliable at realistic copy
+counts. Making facts extractable by questioning, not just memorized as sentences, is the open problem (and the target
+for optimized canaries).
+
+\textbf{Pre-registered vs.\ stable rule.} Running 32 tests per model at $\alpha=0.01$ produces occasional isolated
+hits. We saw three, all at 1 copy (Fig.~\ref{fig:dose}, hollow markers). The scorecard therefore counts a dose
+only if every higher dose is also detected. This rule is exploratory, and Fig.~\ref{fig:dose} reports the
+pre-registered one.
 
 \textbf{Limitations.} One model size (160M) and one seed per pipeline; larger models memorize more, so our copy
 counts are likely conservative \todo{unless tier 1 adds 410M}. Fluent traps are template-generated rather than
