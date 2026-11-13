@@ -58,3 +58,8 @@ All entries below were written before any canary-bearing model was trained or sc
   base corpus (`results/data-mvr-v1/survival.json`: e.g. real place names). They were generated before the random
   split, so they fall on both sides of it and the test stays valid. They are kept in the primary analysis; an
   *exploratory* sensitivity analysis will drop them.
+- **Nov 13, tier 1 (Pythia-410M), written before any 410M model was trained or scored:** same bundle, pipelines,
+  detectors, test and outcomes as 160M. LR is **not** re-tuned: 3e-5, as for 160M (no canary data used).
+  Batch 2 × grad-accum 16 instead of 8 × 4 (memory on one L40S), so tokens per optimizer step (64k) are unchanged.
+  Reference model for `ref` = base Pythia-410M. The 160M results above were already seen when this entry was
+  written; the 410M analysis follows the same rules, including the exploratory "stable" minimum dose.

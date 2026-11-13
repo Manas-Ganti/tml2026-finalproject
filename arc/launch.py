@@ -29,6 +29,11 @@ sys.path.insert(0, str(ROOT))
 from canary.schemas import PIPELINES, validate_run_config  # noqa: E402
 
 GRID_BASE = "configs/grid-base.yaml"
+# Per-model memory overrides on 1x L40S (46 GB), fp32 weights + tf32 math. Tokens per optimizer step stay at
+# batch x accum x seq = 64k, the same as grid-base, so the optimization is comparable across sizes.
+MODEL_OVERRIDES = {
+    "EleutherAI/pythia-410m": {"batch_size": 2, "grad_accum": 16},
+}
 
 
 def run_id_for(model: str, pipeline: str, bundle: str, seed: int, tag: str = "") -> str:
@@ -62,7 +67,7 @@ def plan(args, root: Path = ROOT, queued: set[str] | None = None) -> list[dict]:
         if pipeline not in PIPELINES:
             raise SystemExit(f"launch: unknown pipeline '{pipeline}' (allowed: {', '.join(PIPELINES)})")
         rid = run_id_for(args.model, pipeline, args.bundle, args.seed, args.tag)
-        cfg = {**base, "run_id": rid, "model": args.model, "pipeline": pipeline, "lr": float(args.lr),
+        cfg = {**base, **MODEL_OVERRIDES.get(args.model, {}), "run_id": rid, "model": args.model, "pipeline": pipeline, "lr": float(args.lr),
                "seed": args.seed, "corpus_path": f"data/corpus/{pipeline}", "bundle_id": args.bundle,
                "embed_mode": args.embed_mode}
         validate_run_config(cfg, where=rid)
