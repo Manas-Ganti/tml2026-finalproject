@@ -1,0 +1,296 @@
+{
+ "substring-dedup": {
+  "fictional_fact|1": {
+   "inserted": 200,
+   "alive": 199,
+   "canaries": 200,
+   "canaries_alive": 199
+  },
+  "fictional_fact|4": {
+   "inserted": 800,
+   "alive": 798,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fictional_fact|16": {
+   "inserted": 3200,
+   "alive": 3199,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fictional_fact|64": {
+   "inserted": 12800,
+   "alive": 12787,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fluent_trap|1": {
+   "inserted": 200,
+   "alive": 190,
+   "canaries": 200,
+   "canaries_alive": 190
+  },
+  "fluent_trap|4": {
+   "inserted": 800,
+   "alive": 186,
+   "canaries": 200,
+   "canaries_alive": 186
+  },
+  "fluent_trap|16": {
+   "inserted": 3200,
+   "alive": 192,
+   "canaries": 200,
+   "canaries_alive": 192
+  },
+  "fluent_trap|64": {
+   "inserted": 12800,
+   "alive": 198,
+   "canaries": 200,
+   "canaries_alive": 198
+  },
+  "random_seq|1": {
+   "inserted": 200,
+   "alive": 200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "random_seq|4": {
+   "inserted": 800,
+   "alive": 200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "random_seq|16": {
+   "inserted": 3200,
+   "alive": 200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "random_seq|64": {
+   "inserted": 12800,
+   "alive": 200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "watermark|1": {
+   "inserted": 200,
+   "alive": 190,
+   "canaries": 200,
+   "canaries_alive": 190
+  },
+  "watermark|4": {
+   "inserted": 800,
+   "alive": 192,
+   "canaries": 200,
+   "canaries_alive": 192
+  },
+  "watermark|16": {
+   "inserted": 3200,
+   "alive": 199,
+   "canaries": 200,
+   "canaries_alive": 199
+  },
+  "watermark|64": {
+   "inserted": 12800,
+   "alive": 199,
+   "canaries": 200,
+   "canaries_alive": 199
+  }
+ },
+ "nfkc": {
+  "fictional_fact|1": {
+   "inserted": 200,
+   "alive": 200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fictional_fact|4": {
+   "inserted": 800,
+   "alive": 800,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fictional_fact|16": {
+   "inserted": 3200,
+   "alive": 3200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fictional_fact|64": {
+   "inserted": 12800,
+   "alive": 12800,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fluent_trap|1": {
+   "inserted": 200,
+   "alive": 200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fluent_trap|4": {
+   "inserted": 800,
+   "alive": 800,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fluent_trap|16": {
+   "inserted": 3200,
+   "alive": 3200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fluent_trap|64": {
+   "inserted": 12800,
+   "alive": 12800,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "random_seq|1": {
+   "inserted": 200,
+   "alive": 200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "random_seq|4": {
+   "inserted": 800,
+   "alive": 800,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "random_seq|16": {
+   "inserted": 3200,
+   "alive": 3200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "random_seq|64": {
+   "inserted": 12800,
+   "alive": 12800,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "watermark|1": {
+   "inserted": 200,
+   "alive": 0,
+   "canaries": 200,
+   "canaries_alive": 0
+  },
+  "watermark|4": {
+   "inserted": 800,
+   "alive": 0,
+   "canaries": 200,
+   "canaries_alive": 0
+  },
+  "watermark|16": {
+   "inserted": 3200,
+   "alive": 0,
+   "canaries": 200,
+   "canaries_alive": 0
+  },
+  "watermark|64": {
+   "inserted": 12800,
+   "alive": 0,
+   "canaries": 200,
+   "canaries_alive": 0
+  }
+ },
+ "paraphrase": {
+  "fictional_fact|1": {
+   "inserted": 200,
+   "alive": 200,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fictional_fact|4": {
+   "inserted": 800,
+   "alive": 800,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fictional_fact|16": {
+   "inserted": 3200,
+   "alive": 3196,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fictional_fact|64": {
+   "inserted": 12800,
+   "alive": 12791,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fluent_trap|1": {
+   "inserted": 200,
+   "alive": 137,
+   "canaries": 200,
+   "canaries_alive": 137
+  },
+  "fluent_trap|4": {
+   "inserted": 800,
+   "alive": 541,
+   "canaries": 200,
+   "canaries_alive": 198
+  },
+  "fluent_trap|16": {
+   "inserted": 3200,
+   "alive": 2198,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "fluent_trap|64": {
+   "inserted": 12800,
+   "alive": 8947,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "random_seq|1": {
+   "inserted": 200,
+   "alive": 166,
+   "canaries": 200,
+   "canaries_alive": 166
+  },
+  "random_seq|4": {
+   "inserted": 800,
+   "alive": 658,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "random_seq|16": {
+   "inserted": 3200,
+   "alive": 2661,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "random_seq|64": {
+   "inserted": 12800,
+   "alive": 10749,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "watermark|1": {
+   "inserted": 200,
+   "alive": 138,
+   "canaries": 200,
+   "canaries_alive": 138
+  },
+  "watermark|4": {
+   "inserted": 800,
+   "alive": 563,
+   "canaries": 200,
+   "canaries_alive": 199
+  },
+  "watermark|16": {
+   "inserted": 3200,
+   "alive": 2232,
+   "canaries": 200,
+   "canaries_alive": 200
+  },
+  "watermark|64": {
+   "inserted": 12800,
+   "alive": 8917,
+   "canaries": 200,
+   "canaries_alive": 200
+  }
+ }
+}
