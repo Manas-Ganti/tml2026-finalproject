@@ -6,7 +6,8 @@ Source idea: `Data Provenance Canary Project Proposal.pdf` (Nov 3, 2026, @sahasr
 **Team of 3, each with a Claude Code agent, sharing one git repo.** **Session start:** `git pull --rebase`,
 read §3b (workflow), `docs/STATUS.md`, `docs/PLAN.md` (tasks + owners), then `scripts/board.sh inbox` (messages
 from other agents, see `docs/BOARD.md`).
-**Current phase: 1 — pipeline build** (scope approved Nov 9; see §3b and `docs/PLAN.md`). Update this line when the phase changes.
+**Current phase: 2 — experiments** (MVR done Nov 13; 410M running; see `docs/PLAN.md` §0 for open tasks). Update this line when the phase changes.
+**Until PRs #1→#4 are merged, the current code lives on branch `manas/mvr-pipeline`, not `main`.**
 
 ### First session on a new machine (agents: do this before anything else)
 1. **Ask your human** for their first name and which role they're taking (A, B or C, `docs/PLAN.md` §3). Don't
@@ -100,8 +101,8 @@ repo (https://github.com/Manas-Ganti/tml2026-finalproject). **This file is the s
 | Phase | What | Exit condition |
 |-------|------|----------------|
 | **0. Setup + abstract** (done Nov 9) | Repo skeleton, this CLAUDE.md, `docs/abstract.md` for approval | Abstract approved and reviews received |
-| **1. Pipeline build** (now) | Build tier 0, split across the three owners below. Interfaces are fixed first (§3c) so people can work in parallel | Smoke run end to end on 160M |
-| **2. Experiments** | Tier 0 grid, then tiers 1–3 (tier 4 optional) | Scorecard filled |
+| **1. Pipeline build** (done Nov 13) | Build tier 0, split across the three owners below. Interfaces are fixed first (§3c) so people can work in parallel | Smoke run end to end on 160M |
+| **2. Experiments** (now) | Tier 0 grid, then tiers 1–3 (tier 4 optional) | Scorecard filled |
 | **3. Write-up** | 4–6 page NeurIPS-template report | Submitted |
 
 Scope was approved Nov 9, 2026. Task IDs, milestones (M0–M7) and the infra list are in `docs/PLAN.md`.

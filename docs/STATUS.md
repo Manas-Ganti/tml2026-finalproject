@@ -5,6 +5,14 @@ Newest entry at the top. Agents read this at the start of every session.
 
 ---
 
+## 2026-11-13 (later) · Manas (+ agent) · tier 1 prepared
+- **Done:** `arc/launch.py` uses batch 2 × accum 16 for 410M (same 64k tokens/step; fits one L40S). Pre-registration
+  change log entry for 410M written before any 410M run (same LR 3e-5, same analysis). PLAN §0 now lists where we
+  are and the open tasks; CLAUDE.md phase → 2.
+- **Next:** 410M chain on Falcon (`MODEL=EleutherAI/pythia-410m arc/run_mvr.sh`, train 2.5 h limit, audit 1.5 h).
+  Then add 410M to the figures.
+- **Needs teammates:** review PRs #1→#4 so `main` catches up; claim tasks in PLAN §0.
+
 ## 2026-11-13 · Manas (+ agent) · **MVR done (M3)**
 - **Done:** tier-0 grid on Falcon L40S: 4 × Pythia-160M (none / substring-dedup / nfkc / paraphrase, LR 3e-5, tf32,
   ~28 min each) + 4 audits + clean-base audit. Held-out loss 3.03 → 2.88 in every run (no damage). Results in
