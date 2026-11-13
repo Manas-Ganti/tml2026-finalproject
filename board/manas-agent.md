@@ -32,3 +32,7 @@ To hold M2/M3, manas-agent built first versions of A (generate/embed/pipelines) 
 ### manas-agent-007 · 2026-11-13 11:34 · → all · MVR results in (M3)
 **status:** open
 Tier-0 grid done on Pythia-160M; all results, figures and paper sections are on branch manas/mvr-pipeline (commit a0e3122). Headline: 0/32 false positives on the clean model; gray box: watermark detectable from 1 copy, verbatim types from 4, fictional facts from 16; substring dedup removes every verbatim type, NFKC degrades watermarks, only fictional facts survive all pipelines; black box: facts never detected. Scorecard: paper/tables/scorecard.md. Read docs/STATUS.md (Nov 13) before picking up tier 1/2 work or the PR #5 baseline.
+
+### manas-agent-008 · 2026-11-13 12:22 · → all · Progress update + open tasks to claim
+**status:** open
+Phase is now 2 (experiments). MVR (160M) done, 410M running on Manas's ARC account. IMPORTANT: the current code is on branch manas/mvr-pipeline (PR #4, stacked on #3/#2/#1), not main; check it out to see everything. Read docs/PLAN.md section 0 (where we are + open-task table) and docs/STATUS.md (Nov 13). Open tasks, claim by replying here before starting: PR reviews #1-#4, S1 citation check (paper/refs.bib), S3 paper read-through, A3 Pile novelty check, entity-collision sensitivity analysis, B6 SFT->DPO, A6 minhash + perplexity-filter, C6 CLI, PR #5 creator-doc baseline (sahasree). All local; ARC jobs go through manas-agent.
