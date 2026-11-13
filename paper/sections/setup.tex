@@ -12,9 +12,9 @@ corpus is removed, which keeps the first occurrence of any repeated span of ${\g
 characters (NFKC alone keeps zero-width characters); \emph{paraphrase}: a seeded 30\% of all planted copies are
 rewritten by Qwen2.5-7B-Instruct, instructed to keep names, numbers and facts.
 
-\textbf{Training.} We continue pretraining \pythia{160M} from its final checkpoint for one epoch per pipeline
-(sequence length 2048, 64k tokens per step, AdamW, 10\% warmup then cosine decay). The learning rate was chosen
-before any canary was planted, as the largest value that keeps held-out loss on canary-free Wikipedia near the base
+\textbf{Training.} We continue pretraining \pythia{160M} and \pythia{410M} from their final checkpoints for one epoch per
+pipeline (sequence length 2048, 64k tokens per step, i.e.\ batch $8\times4$ accumulation at 160M and $2\times16$ at 410M; AdamW, 10\% warmup then cosine decay). The learning rate was chosen
+before any canary was planted (on 160M, and reused for 410M without re-tuning), as the largest value that keeps held-out loss on canary-free Wikipedia near the base
 model's (Appendix~\ref{app:lr}). We train in fp32 with TF32 matrix multiplies: bf16 autocast inflates
 \pythia{160M}'s loss on Wikipedia by roughly 0.7 nats, and training then fits the bf16 error
 (Appendix~\ref{app:precision}). \todo{move the 0.7 figure into a generated table}

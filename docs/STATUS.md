@@ -5,6 +5,19 @@ Newest entry at the top. Agents read this at the start of every session.
 
 ---
 
+## 2026-11-14 · Manas (+ agent) · tier 1 (410M) done
+- **Done:** 4 × Pythia-410M trained (≈70 min each, 14 GB peak) and audited; clean 410M check 0/32, re-split nulls
+  uniform (KS p = 0.38). `make_figs.py` now takes several `--model`s (one figure row per model). Results, abstract,
+  discussion, setup and appendix updated for both sizes. Fig 4 (QQ) moved to the appendix to stay within 6 pages.
+- **Headline at 410M:** every type detectable from 1 copy with log-probs; verbatim types text-only from 4 copies;
+  facts still never text-only. Dedup still removes random seq./fluent traps at any dose.
+- **New finding (exploratory):** 1-copy canaries are identical in the `none` and dedup corpora
+  (`scripts/survival_by_dose.py`: random_seq 200/200 intact), yet at 410M AUC drops 0.90 → 0.54 under dedup. Single
+  copies are only detectable when repeated same-type canaries are also present. A 1-copy-only corpus would test it
+  directly (one more training run).
+- **Next:** push `results/data-mvr-v1/survival_by_dose.json` from ARC (appendix table). Tier 2 (SFT → DPO), or the
+  1-copy-only control run. Citations (S1).
+
 ## 2026-11-13 (later) · Manas (+ agent) · tier 1 prepared
 - **Done:** `arc/launch.py` uses batch 2 × accum 16 for 410M (same 64k tokens/step; fits one L40S). Pre-registration
   change log entry for 410M written before any 410M run (same LR 3e-5, same analysis). PLAN §0 now lists where we

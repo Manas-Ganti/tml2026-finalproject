@@ -14,7 +14,7 @@ get: commercial models usually expose text, not log-probabilities. We therefore 
 \textbf{how many copies of which canary does a writer need before training on their work becomes provable, and
 with what access?}
 
-We answer with a controlled study in which ground truth is known. We continue pretraining \pythia{160M}
+We answer with a controlled study in which ground truth is known. We continue pretraining \pythia{160M} and \pythia{410M}
 \citep{biderman2023pythia} on Wikipedia into which we plant canaries of four types at four copy counts; matched
 canaries from the same generators that are never planted serve as non-members, and the member/non-member split
 is randomized after generation, which makes a rank test of member vs.\ non-member scores a valid permutation-style
@@ -24,7 +24,7 @@ test with exact false-positive control. Our contributions:
         detectable at $p<0.01$, whether it survives deduplication, normalization and paraphrasing, whether
         text-only access suffices, and its false-positive rate on a model that never saw it.
   \item \textbf{Dose--response and survival measurements} under realistic pipelines and two access levels
-        (Figures~\ref{fig:dose} and~\ref{fig:survival}).
+        (Figures~\ref{fig:dose} and~\ref{fig:survival}) at two model sizes, including the finding that single copies are only detectable when repeated canaries of the same kind are also present.
   \item A \textbf{pre-registered audit protocol} whose false-positive control we verify empirically on the clean
-        base model (Figure~\ref{fig:qq}), and released code that turns the protocol into a tool for creators.
+        base models (Appendix~\ref{app:qq}), and released code that turns the protocol into a tool for creators.
 \end{itemize}

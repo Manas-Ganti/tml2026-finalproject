@@ -2,7 +2,9 @@
 The analysis plan (\texttt{docs/preregistration.md}) was committed to git before any canary-bearing model was
 trained or scored. Commit \texttt{6ef2b5b} (Nov 10, 2026). The change log records two pre-result entries: the LR (App.~\ref{app:lr})
 and 8 fictional entity names that also occur in the base corpus. Deviation after results: the ``stable'' minimum
-dose used in the scorecard (Sec.~\ref{sec:results}), labelled exploratory.
+dose used in the scorecard (Sec.~\ref{sec:results}), labelled exploratory. A third entry, written after the
+160M results but before any 410M model was trained, fixes the 410M settings: same LR and analysis, batch
+$2\times16$ for memory.
 
 \section{Canary examples}\label{app:examples}
 \todo{one example per type from data/canaries/mvr-v1.jsonl, rendered with zero-width characters shown as
@@ -23,10 +25,26 @@ sentence across CPU/A100/L40S.}
 Planted copies still present (exact text; for fictional facts, entity and answer in the same document) after
 each pipeline. The \emph{none} corpus has 82.5M tokens.
 
-\begin{center}\small\IfFileExists{tables/app_survival.tex}{\input{tables/app_survival.tex}}{pending}\end{center}
+\begin{center}\small\setlength{\tabcolsep}{4pt}\IfFileExists{tables/app_survival.tex}{\input{tables/app_survival.tex}}{pending}\end{center}
+
+Per copy count. Under substring dedup, every canary keeps at most one copy, and all 1-copy random sequences
+survive intact, so dedup and \emph{none} contain identical 1-copy canaries (Sec.~\ref{sec:results}).
+
+\begin{center}\small\IfFileExists{tables/app_survival_dose.tex}{\input{tables/app_survival_dose.tex}}{pending: run scripts/survival\_by\_dose.py}\end{center}
 
 \section{All detectors}\label{app:all}
 Primary detectors, every pipeline and dose (200 members vs.\ 200 non-members). Bold: $p<0.01$. Secondary
 detectors are in \texttt{results/*/metrics.json}.
 
-{\scriptsize\IfFileExists{tables/app_all_doses.tex}{\input{tables/app_all_doses.tex}}{pending}}
+\paragraph{Pythia-160M.}
+{\scriptsize\setlength{\tabcolsep}{4pt}\IfFileExists{tables/app_all_doses_p160m.tex}{\input{tables/app_all_doses_p160m.tex}}{pending}}
+
+\paragraph{Pythia-410M.}
+{\scriptsize\setlength{\tabcolsep}{4pt}\IfFileExists{tables/app_all_doses_p410m.tex}{\input{tables/app_all_doses_p410m.tex}}{pending}}
+
+\section{False-positive check}\label{app:qq}
+\begin{center}
+  \IfFileExists{figs/fig4_qq.pdf}{\includegraphics[width=0.4\linewidth]{figs/fig4_qq.pdf}}{\fbox{Fig 4 pending}}
+  \captionof{figure}{Clean base models: p-values from 200 random re-splits per cell against the uniform
+  distribution, for both primary detectors and both model sizes.}\label{fig:qq}
+\end{center}

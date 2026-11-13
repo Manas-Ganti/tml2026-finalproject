@@ -1,10 +1,15 @@
-\begin{tabular}{lcccccc}
+\begin{tabular}{llcccccc}
 \toprule
-Type & Min.\ copies & Dedup & NFKC & Paraphrase & Text-only & False acc. \\
+Model & Type & Min.\ copies & Dedup & NFKC & Paraphrase & Text-only & False acc. \\
 \midrule
-Random seq. & 1 & no & yes (1) & yes (4) & no & 0/8 \\
-Fluent trap & 4 & no & yes (4) & yes (4) & yes (64) & 0/8 \\
-Watermark & 1 & no & yes (4) & yes (1) & yes (16) & 0/8 \\
-Fictional fact & 16 & yes (16) & yes (16) & yes (16) & no & 0/8 \\
+Pythia-160M & Random seq. & 1 & no & yes (1) & yes (4) & no & 0/8 \\
+ & Fluent trap & 4 & no & yes (4) & yes (4) & yes (64) & 0/8 \\
+ & Watermark & 1 & no & yes (4) & yes (1) & yes (16) & 0/8 \\
+ & Fictional fact & 16 & yes (16) & yes (16) & yes (16) & no & 0/8 \\
+\midrule
+Pythia-410M & Random seq. & 1 & no & yes (1) & yes (1) & yes (4) & 0/8 \\
+ & Fluent trap & 1 & no & yes (1) & yes (1) & yes (4) & 0/8 \\
+ & Watermark & 1 & yes (1) & yes (4) & yes (1) & yes (4) & 0/8 \\
+ & Fictional fact & 1 & yes (1) & yes (1) & yes (1) & no & 0/8 \\
 \bottomrule
 \end{tabular}
