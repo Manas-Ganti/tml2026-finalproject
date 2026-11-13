@@ -1,0 +1,178 @@
+{
+  "run_id": "lrcheck-160m-3e-5",
+  "config": {
+    "batch_size": 8,
+    "bundle_id": "smoke-nocanary",
+    "corpus_path": "data/corpus/smoke",
+    "embed_mode": "spread",
+    "epochs": 1,
+    "eval_batches": 20,
+    "grad_accum": 4,
+    "heldout_docs": 50,
+    "log_every": 4,
+    "lr": 3e-05,
+    "max_grad_norm": 1.0,
+    "max_steps": null,
+    "min_lr_ratio": 0.1,
+    "model": "EleutherAI/pythia-160m",
+    "output_root": ".",
+    "pipeline": "none",
+    "precision": "bf16",
+    "run_id": "lrcheck-160m-3e-5",
+    "save_dtype": "fp32",
+    "seed": 0,
+    "seq_len": 2048,
+    "warmup_ratio": 0.1,
+    "weight_decay": 0.01
+  },
+  "tokens_trained": 4718592,
+  "corpus_tokens_packed": 4767409,
+  "optimizer_steps": 72,
+  "wall_s": 53.6,
+  "tokens_per_s": 88069,
+  "peak_gpu_mem_gb": 16.76,
+  "heldout_loss_before": 2.981088638305664,
+  "heldout_loss_after": 3.200539970397949,
+  "loss_curve": [
+    {
+      "step": 4,
+      "loss": 3.5371,
+      "lr": 1.7142857142857142e-05,
+      "grad_norm": 83.929,
+      "elapsed_s": 3.1
+    },
+    {
+      "step": 8,
+      "loss": 3.5327,
+      "lr": 3e-05,
+      "grad_norm": 101.191,
+      "elapsed_s": 6.0
+    },
+    {
+      "step": 12,
+      "loss": 3.5938,
+      "lr": 2.9748496702882082e-05,
+      "grad_norm": 122.303,
+      "elapsed_s": 9.0
+    },
+    {
+      "step": 16,
+      "loss": 3.6915,
+      "lr": 2.900335776092998e-05,
+      "grad_norm": 117.445,
+      "elapsed_s": 12.0
+    },
+    {
+      "step": 20,
+      "loss": 3.6571,
+      "lr": 2.779234686313806e-05,
+      "grad_norm": 143.479,
+      "elapsed_s": 14.9
+    },
+    {
+      "step": 24,
+      "loss": 3.784,
+      "lr": 2.6160585970045635e-05,
+      "grad_norm": 128.377,
+      "elapsed_s": 17.9
+    },
+    {
+      "step": 28,
+      "loss": 3.753,
+      "lr": 2.4168874080870603e-05,
+      "grad_norm": 119.404,
+      "elapsed_s": 20.8
+    },
+    {
+      "step": 32,
+      "loss": 3.7805,
+      "lr": 2.189142187813689e-05,
+      "grad_norm": 111.135,
+      "elapsed_s": 23.8
+    },
+    {
+      "step": 36,
+      "loss": 3.85,
+      "lr": 1.9413086656365384e-05,
+      "grad_norm": 110.962,
+      "elapsed_s": 26.8
+    },
+    {
+      "step": 40,
+      "loss": 3.8569,
+      "lr": 1.6826210560687787e-05,
+      "grad_norm": 106.494,
+      "elapsed_s": 29.8
+    },
+    {
+      "step": 44,
+      "loss": 3.7658,
+      "lr": 1.4227179941814981e-05,
+      "grad_norm": 105.877,
+      "elapsed_s": 32.7
+    },
+    {
+      "step": 48,
+      "loss": 3.7372,
+      "lr": 1.1712834024925768e-05,
+      "grad_norm": 118.573,
+      "elapsed_s": 35.7
+    },
+    {
+      "step": 52,
+      "loss": 3.7498,
+      "lr": 9.376856704567208e-06,
+      "grad_norm": 116.189,
+      "elapsed_s": 38.7
+    },
+    {
+      "step": 56,
+      "loss": 3.7484,
+      "lr": 7.306285906378238e-06,
+      "grad_norm": 110.297,
+      "elapsed_s": 41.7
+    },
+    {
+      "step": 60,
+      "loss": 3.787,
+      "lr": 5.578270575938212e-06,
+      "grad_norm": 107.802,
+      "elapsed_s": 44.6
+    },
+    {
+      "step": 64,
+      "loss": 3.7295,
+      "lr": 4.257196128517637e-06,
+      "grad_norm": 124.371,
+      "elapsed_s": 47.6
+    },
+    {
+      "step": 68,
+      "loss": 3.6862,
+      "lr": 3.392285464748298e-06,
+      "grad_norm": 89.21,
+      "elapsed_s": 50.6
+    },
+    {
+      "step": 72,
+      "loss": 3.7676,
+      "lr": 3.0157649377635902e-06,
+      "grad_norm": 97.833,
+      "elapsed_s": 53.6
+    }
+  ],
+  "provenance": {
+    "git_commit": "553911b753e07b13fec7ee24beefac1af092297b",
+    "corpus_manifest_sha256": "9beb07a68c4b2bdc834c66525e8c3fe943c8150cd7c02950e7c0924927514944",
+    "corpus_shards_sha256": {
+      "shard_000.jsonl": "02e8f48f52099483d353829c8da83f10db4355c7288f3409f863aeee464a5570"
+    },
+    "torch": "2.6.0+cu126",
+    "transformers": "4.51.3",
+    "python": "3.11.18",
+    "host": "fal052",
+    "user": "manasganti",
+    "slurm_job_id": "819999",
+    "device": "NVIDIA L40S"
+  }
+}

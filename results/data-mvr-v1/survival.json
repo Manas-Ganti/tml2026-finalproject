@@ -1,0 +1,114 @@
+{
+ "none": {
+  "token_count": 82493316,
+  "n_docs": 60794,
+  "survival_by_type": null,
+  "pipeline_info": null,
+  "entity_collisions_with_base": [
+   "Arnholt",
+   "Calderbrook",
+   "Cormley",
+   "Gilmerton",
+   "Gravelley",
+   "Kesby",
+   "Keston",
+   "Varndell"
+  ]
+ },
+ "nfkc": {
+  "token_count": 82077633,
+  "n_docs": 60794,
+  "survival_by_type": {
+   "fictional_fact": {
+    "alive": 17000,
+    "inserted": 17000,
+    "frac": 1.0
+   },
+   "fluent_trap": {
+    "alive": 17000,
+    "inserted": 17000,
+    "frac": 1.0
+   },
+   "random_seq": {
+    "alive": 17000,
+    "inserted": 17000,
+    "frac": 1.0
+   },
+   "watermark": {
+    "alive": 0,
+    "inserted": 17000,
+    "frac": 0.0
+   }
+  },
+  "pipeline_info": {
+   "docs_changed": 23703
+  },
+  "entity_collisions_with_base": null
+ },
+ "substring-dedup": {
+  "token_count": 77499033,
+  "n_docs": 60794,
+  "survival_by_type": {
+   "fictional_fact": {
+    "alive": 16983,
+    "inserted": 17000,
+    "frac": 0.999
+   },
+   "fluent_trap": {
+    "alive": 766,
+    "inserted": 17000,
+    "frac": 0.0451
+   },
+   "random_seq": {
+    "alive": 800,
+    "inserted": 17000,
+    "frac": 0.0471
+   },
+   "watermark": {
+    "alive": 780,
+    "inserted": 17000,
+    "frac": 0.0459
+   }
+  },
+  "pipeline_info": {
+   "window": 50,
+   "tokens_in": 82493316,
+   "tokens_removed": 4995068
+  },
+  "entity_collisions_with_base": null
+ },
+ "paraphrase": {
+  "token_count": 82310345,
+  "n_docs": 60794,
+  "survival_by_type": {
+   "fictional_fact": {
+    "alive": 16987,
+    "inserted": 17000,
+    "frac": 0.9992
+   },
+   "fluent_trap": {
+    "alive": 11823,
+    "inserted": 17000,
+    "frac": 0.6955
+   },
+   "random_seq": {
+    "alive": 14234,
+    "inserted": 17000,
+    "frac": 0.8373
+   },
+   "watermark": {
+    "alive": 11850,
+    "inserted": 17000,
+    "frac": 0.6971
+   }
+  },
+  "pipeline_info": {
+   "model": "Qwen/Qwen2.5-7B-Instruct",
+   "fraction": 0.3,
+   "seed": 0,
+   "temperature": 0.7,
+   "n_paraphrased": 20400
+  },
+  "entity_collisions_with_base": null
+ }
+}

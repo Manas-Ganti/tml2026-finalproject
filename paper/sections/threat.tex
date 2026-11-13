@@ -1,0 +1,19 @@
+\section{Threat model and audit test}\label{sec:threat}
+\textbf{Parties.} A \emph{creator} publishes text containing canaries. A \emph{developer} collects it and trains a
+model after a data pipeline the creator does not control (deduplication, normalization, paraphrasing). An
+\emph{auditor} acting for the creator queries the model with either \emph{gray-box} access (per-token
+log-probabilities of a given text) or \emph{black-box} access (sampled text only).
+
+\textbf{Randomized controls.} The creator generates $2m$ canaries from one generator and, \emph{after} generation,
+splits them at random into $m$ members that are published and $m$ non-members kept secret. If the model never saw
+the creator's text, member and non-member scores are exchangeable, so any rank test on them has its nominal
+false-positive rate regardless of how good or bad the detector is. This is what lets a weak per-canary signal
+support a strong, calibrated claim \citep{zhang2024membership}.
+
+\textbf{Test.} For a detector score $s$ (oriented so that higher means more member-like), we compute a one-sided
+Mann--Whitney $U$ test of $H_0$: members and non-members are exchangeable, against the alternative that members
+score higher, and reject at $\alpha=0.01$. We pre-registered one primary detector per access level
+(Appendix~\ref{app:prereg}): gray box uses the mean token log-likelihood (\emph{loss}); black box uses
+\emph{completion}, the fraction of a canary's second half reproduced by greedy decoding from its first half (for
+fictional facts: the fraction of 16 samples from a held-out question phrasing that produce the answer). We report
+AUC, TPR at 1\% FPR, and the minimum bundle size $m$ at which $\ge 80\%$ of resampled bundles reach $p<0.01$.

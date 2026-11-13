@@ -1,0 +1,20 @@
+\begin{tabular}{llrrrrrrrr}
+\toprule
+ & & \multicolumn{4}{c}{Gray box} & \multicolumn{4}{c}{Black box} \\
+\cmidrule(lr){3-6}\cmidrule(lr){7-10}
+Model & Copies & 1 & 4 & 16 & 64 & 1 & 4 & 16 & 64 \\
+\midrule
+Pythia-160M & Random seq. & 200 & 100 & 10 & 10 & 200 & -- & -- & -- \\
+ & Fluent trap & -- & 100 & 10 & 10 & -- & -- & -- & 50 \\
+ & Watermark & 100 & 10 & 10 & 10 & -- & -- & 100 & 10 \\
+ & Fictional fact & -- & -- & 100 & 10 & -- & -- & -- & -- \\
+\midrule
+Pythia-410M & Random seq. & 10 & 10 & 10 & 10 & -- & 200 & 50 & 10 \\
+ & Fluent trap & 50 & 10 & 10 & 10 & -- & 200 & 25 & 10 \\
+ & Watermark & 10 & 10 & 10 & 10 & -- & 100 & 10 & 10 \\
+ & Fictional fact & 200 & 100 & 25 & 10 & -- & -- & -- & -- \\
+\midrule
+\multicolumn{10}{l}{Clean Pythia-160M: 0/32 primary cells at $p<0.01$; re-split nulls: 1.1\% at $p<0.01$, KS $p=0.08$} \\
+\multicolumn{10}{l}{Clean Pythia-410M: 0/32 primary cells at $p<0.01$; re-split nulls: 1.0\% at $p<0.01$, KS $p=0.38$} \\
+\bottomrule
+\end{tabular}

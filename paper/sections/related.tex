@@ -1,0 +1,18 @@
+\section{Related work}
+\textbf{Membership inference on LMs.} Loss-based attacks \citep{carlini2021extracting}, Min-K\% \citep{shi2024detecting}
+and Min-K\%++ \citep{zhang2025minkpp} score how unusually likely a text is under the model. Evaluations with
+same-distribution non-members find these attacks near chance on large pretrained models
+\citep{duan2024membership,das2024blind}, and \citet{zhang2024membership} argue that MIAs cannot, in principle,
+prove that a model was trained on given data without a randomized control. Dataset inference aggregates weak
+signals over many documents \citep{maini2024llm}; our test does the same over a creator's bundle of canaries.
+
+\textbf{Canaries, traps and data watermarks.} \citet{carlini2019secret} introduced random canaries to measure
+unintended memorization. Copyright traps \citep{meeus2024copyright} plant repeated fictitious sequences in
+documents; \citet{shilov2024mosaic} show fuzzy duplicates are memorized almost as well as exact ones.
+\citet{wei2024proving} plant random-sequence and Unicode watermarks and test with a hypothesis test against
+re-sampled watermarks, which is the closest design to ours. \todo{verify STAMP, radioactive watermarks, and any
+2025--26 work on canary survival under cleaning/post-training (CLAUDE.md §10); adjust contributions if needed.}
+
+\textbf{Deduplication and memorization.} Deduplication reduces memorization \citep{lee2022deduplicating,kandpal2022deduplicating},
+which is exactly what threatens repeated canaries. Facts are learned from varied mentions rather than verbatim
+repetition \citep{allenzhu2023physics}, which motivates our paraphrased fictional facts.
