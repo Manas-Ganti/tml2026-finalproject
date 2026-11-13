@@ -11,7 +11,7 @@ BR="$(git rev-parse --abbrev-ref HEAD)"
 
 git pull --rebase --autostash -q origin "$BR"
 shopt -s nullglob
-FILES=(results/*/metrics.json results/*/train_metrics.json results/*/null_pvalues.json results/data-*/survival.json configs/*.yaml)
+FILES=(results/*/metrics.json results/*/train_metrics.json results/*/null_pvalues.json results/data-*/survival*.json configs/*.yaml)
 [ ${#FILES[@]} -gt 0 ] || { echo "push_results: nothing to add"; exit 0; }
 git add -- "${FILES[@]}"
 # safety net: refuse if anything big or forbidden got staged
