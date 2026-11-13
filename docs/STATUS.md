@@ -15,7 +15,7 @@ Newest entry at the top. Agents read this at the start of every session.
   (`scripts/survival_by_dose.py`: random_seq 200/200 intact), yet at 410M AUC drops 0.90 → 0.54 under dedup. Single
   copies are only detectable when repeated same-type canaries are also present. A 1-copy-only corpus would test it
   directly (one more training run).
-- **Next:** push `results/data-mvr-v1/survival_by_dose.json` from ARC (appendix table). Tier 2 (SFT → DPO), or the
+- **Next:** Tier 2 (SFT → DPO), or the
   1-copy-only control run. Citations (S1).
 
 ## 2026-11-13 (later) · Manas (+ agent) · tier 1 prepared
