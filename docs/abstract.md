@@ -14,7 +14,9 @@ sentences, invisible character watermarks, and fictional facts.
 
 We continue pretraining Pythia-160M (and 410M if time allows) on about 100M tokens of Wikipedia text, with
 canaries planted at 1, 4, 16 or 64 copies. Matched canaries that are never planted serve as non-members,
-so we know the ground truth exactly. Along the way we ask: (1) how many copies each type needs; (2) whether
+so we know the ground truth exactly. As a planned reference point, we will also run the same test on whole 2024 documents
+with no canaries (checked against the Pile so they are truly unseen), to measure what canaries add over plain
+membership inference. Along the way we ask: (1) how many copies each type needs; (2) whether
 it survives realistic data cleaning (deduplication, Unicode normalization, paraphrasing); (3) whether it can be
 detected with text-only access, as with commercial APIs, instead of log probabilities; and (4) whether our
 dataset-level statistical test avoids falsely flagging models that never saw the canaries. The result is a

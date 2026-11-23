@@ -40,6 +40,13 @@ Newest entry at the top. Agents read this at the start of every session.
 - **Next:** tier 1 (410M via `MODEL=EleutherAI/pythia-410m arc/run_mvr.sh`), tier 2 SFT → DPO, entity-collision
   sensitivity analysis, PR #5 creator-doc baseline. Verify all 15 citations (S1).
 
+## 2026-11-11 · sahasree
+- **Done:** PR `sahasree/fineweb-edu-corpus`: propose switching the corpus from Wikipedia to FineWeb-Edu 2024 dumps (base +
+  creator documents), add the creator-document baseline (no-canary MIA row), Pile 13-gram check for creator
+  docs, creator-doc interface in §3c. Abstract updated to match.
+- **Next:** Team review of the PR (it changes CLAUDE.md §2, §3c, §5.2). Owner A confirms the 1% overlap
+  threshold and baseline size, and picks the Pile n-gram tool.
+- **Blocked:** Abstract approval (unchanged).
 ## 2026-11-09 (evening) · Manas (+ agent) · role B (suggested; not yet claimed by PR)
 - **Done:** B1 on ARC: both envs built and import-checked (`canary-train` 5.9 GB, `canary-gen` 8.3 GB), Pythia
   14m–410m downloaded, 5-min GPU test passed on a Tinkercliffs A100 (job started at once, ran 39 s). B3
