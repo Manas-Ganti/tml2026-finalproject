@@ -122,6 +122,9 @@ in §3c. That way no one waits on anyone else.
 - `git pull --rebase` before starting a session. Commit small and often, with clear messages.
 - **Never commit** data, corpora, checkpoints, `results/` raw dumps, secrets, or HF/W&B tokens (see `.gitignore`).
   Large artifacts live on ARC under `/home/<pid>/canary/` or the HF Hub. Only small `metrics.json` summaries go in git.
+- **ARC: all jobs run on Manas's account** (Falcon L40S, `tml_2026`; decided Nov 10). Teammates' agents write and
+  test code locally against `tests/fixtures/`, then post on the board to ask for a job; never assume your human has
+  ARC set up. Results come back via `scripts/sync_from_arc.sh`. Full rules: `docs/PLAN.md` §2b.
 - **Changing this CLAUDE.md or an interface in §3c** requires a dedicated PR and a heads-up to the team, because
   every agent reads it.
 - At the end of a session, each person (or their agent) appends a short entry to `docs/STATUS.md`: what was done,
