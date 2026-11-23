@@ -12,8 +12,8 @@
 \end{figure}
 
 \textbf{How many copies?} With log-probabilities and no cleaning (Fig.~\ref{fig:dose}, \emph{none}),
-\pythia{160M} detects watermarks from a single copy (AUC 0.67), random sequences and fluent traps from 4
-(AUC 0.64--0.65), and fictional facts from 16 (AUC 0.66). Model size matters a lot. \pythia{410M} detects every
+\pythia{160M} detects watermarks and random sequences from a single copy (AUC 0.67 and 0.57; the latter only
+with all 200 canaries), fluent traps from 4 (AUC 0.65), and fictional facts from 16 (AUC 0.66). Model size matters a lot. \pythia{410M} detects every
 type from a single copy: random sequences and watermarks at AUC 0.90, enough for a 10-canary bundle
 (Table~\ref{tab:bundle}). Fictional facts are the weakest at one copy (AUC 0.61, all 200 needed) but reach AUC 0.83
 at 16 copies, where 25 facts suffice. Detection rises steadily with dose at both sizes (App.~\ref{app:all}).

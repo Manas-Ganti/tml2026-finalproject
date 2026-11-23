@@ -7,8 +7,13 @@ dose used in the scorecard (Sec.~\ref{sec:results}), labelled exploratory. A thi
 $2\times16$ for memory.
 
 \section{Canary examples}\label{app:examples}
-\todo{one example per type from data/canaries/mvr-v1.jsonl, rendered with zero-width characters shown as
-$\langle$ZW$\rangle$.}
+The first 16-copy canary of each type in the bundle (regenerated from seed 0 by
+\texttt{scripts/canary\_stats.py}). In the watermark, $\langle$zw$\rangle$ marks an invisible format character
+(zero-width space or joiner, word joiner, soft hyphen) and an underlined letter is a Cyrillic look-alike. For
+verbatim types the black-box detector prompts with the first half and checks the greedy completion against the
+second; for facts it asks a held-out question that no planted copy contains.
+
+{\small\sloppy\IfFileExists{tables/app_examples.tex}{\input{tables/app_examples.tex}}{pending: run scripts/canary\_stats.py}\par}
 
 \section{Learning-rate selection}\label{app:lr}
 Canary-free continued pretraining on 4.8M Wikipedia tokens; held-out loss on 50 unseen documents. bf16 autocast
@@ -18,8 +23,12 @@ larger LR was chosen, as pre-registered.
 \begin{center}\small\IfFileExists{tables/app_lr.tex}{\input{tables/app_lr.tex}}{pending}\end{center}
 
 \section{Numerical precision}\label{app:precision}
-\todo{generated table: Pythia-160M loss in fp32 vs bf16 vs fp16 on 2048-token Wikipedia blocks, and on one short
-sentence across CPU/A100/L40S.}
+Untouched \pythia{160M}, mean next-token loss on the first 16 blocks of 2048 tokens of English Wikipedia
+(stream order), computed on CPU by \texttt{scripts/precision\_check.py}. bf16 adds 0.8 nats whether it is applied
+as autocast or to the weights; fp16 overflows. We therefore score in fp32 and train with fp32 weights and TF32
+matrix multiplies.
+
+\begin{center}\small\IfFileExists{tables/app_precision.tex}{\input{tables/app_precision.tex}}{pending}\end{center}
 
 \section{Pipeline survival}\label{app:survival}
 Planted copies still present (exact text; for fictional facts, entity and answer in the same document) after

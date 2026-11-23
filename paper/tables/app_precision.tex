@@ -1,0 +1,10 @@
+\begin{tabular}{lrr}
+\toprule
+Setting & Mean loss (nats) & $\Delta$ vs.\ fp32 \\
+\midrule
+fp32 & 3.046 & +0.000 \\
+bf16 autocast & 3.850 & +0.804 \\
+bf16 weights & 3.849 & +0.803 \\
+fp16 weights & NaN (overflow) & -- \\
+\bottomrule
+\end{tabular}

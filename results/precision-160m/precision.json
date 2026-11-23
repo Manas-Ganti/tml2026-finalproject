@@ -1,0 +1,29 @@
+{
+ "model": "EleutherAI/pythia-160m",
+ "device": "cpu",
+ "blocks": 16,
+ "seq_len": 2048,
+ "data": "wikimedia/wikipedia 20231101.en, stream order",
+ "rows": [
+  {
+   "setting": "fp32",
+   "loss": 3.0458810180425644,
+   "delta_vs_fp32": 0.0
+  },
+  {
+   "setting": "bf16 autocast",
+   "loss": 3.8499371111392975,
+   "delta_vs_fp32": 0.8040560930967331
+  },
+  {
+   "setting": "bf16 weights",
+   "loss": 3.848712518811226,
+   "delta_vs_fp32": 0.8028315007686615
+  },
+  {
+   "setting": "fp16 weights",
+   "loss": NaN,
+   "delta_vs_fp32": NaN
+  }
+ ]
+}

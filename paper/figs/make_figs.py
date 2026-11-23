@@ -329,6 +329,71 @@ def table_lr(results: Path, out: Path):
     (out / "app_lr.tex").write_text("\n".join(lines) + "\n")
 
 
+def table_precision(results: Path, out: Path):
+    f = results / "precision-160m" / "precision.json"
+    if not f.exists():
+        return
+    p = json.loads(f.read_text())
+    lines = [r"\begin{tabular}{lrr}", r"\toprule", r"Setting & Mean loss (nats) & $\Delta$ vs.\ fp32 \\", r"\midrule"]
+    for r in p["rows"]:
+        loss, delta = r["loss"], r["delta_vs_fp32"]
+        if loss != loss:                                                # NaN: the forward pass overflowed
+            lines.append(rf"{r['setting']} & NaN (overflow) & -- \\")
+        else:
+            lines.append(rf"{r['setting']} & {loss:.3f} & {delta:+.3f} \\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    (out / "app_precision.tex").write_text("\n".join(lines) + "\n")
+
+
+_ZW = {"​", "‌", "‍", "⁠", "­", "﻿"}
+_HOMO = {"а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "х": "x", "у": "y", "і": "i", "ѕ": "s",
+         "А": "A", "Е": "E", "О": "O", "Р": "P", "С": "C", "Х": "X", "Т": "T", "Н": "H", "К": "K", "М": "M", "В": "B"}
+
+
+def _tex_canary(s: str) -> str:
+    out = []
+    for ch in s:
+        if ch in _ZW:
+            out.append(r"$\langle$zw$\rangle$")
+        elif ch in _HOMO:
+            out.append(r"\underline{" + _HOMO[ch] + "}")
+        elif ch in "&%$#_{}":
+            out.append("\\" + ch)
+        elif ch == "~":
+            out.append(r"\textasciitilde{}")
+        elif ch == "^":
+            out.append(r"\textasciicircum{}")
+        elif ch == "\\":
+            out.append(r"\textbackslash{}")
+        elif ord(ch) > 127:
+            out.append("?")
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
+def table_examples(results: Path, bundle: str, out: Path):
+    f = results / f"data-{bundle}" / "canary_stats.json"
+    if not f.exists():
+        return
+    ex = json.loads(f.read_text())["examples"]
+    lines = []
+    for t in TYPES:
+        c = ex.get(t)
+        if not c:
+            continue
+        lines.append(rf"\textbf{{{TYPE_LABEL[t]}}} ({_tex_canary(c['id'])}).\quad " + _tex_canary(c["text"]))
+        if c.get("variants"):
+            lines.append(r"\\ \emph{Other phrasings:} " + " / ".join(_tex_canary(v) for v in c["variants"][1:4]))
+        if c.get("variants"):                                           # fact: held-out question + answer
+            lines.append(r"\\ \emph{Question:} " + _tex_canary(c["cloze_prompt"]) + r"\quad \emph{Answer:} "
+                         + _tex_canary(c["answer"]))
+        else:                                                           # verbatim: the prompt is the first half
+            lines.append(r"\\ \emph{Completion target (second half):} " + _tex_canary(c["answer"]))
+        lines.append(r"\par\medskip")
+    (out / "app_examples.tex").write_text("\n".join(lines) + "\n")
+
+
 def cells_csv(metrics: list[dict], out: Path):
     with open(out / "primary_cells.csv", "w", newline="") as f:
         w = csv.writer(f)
@@ -374,6 +439,8 @@ def main(argv=None) -> int:
     table_survival(results, args.bundle, tabs)
     table_survival_dose(results, args.bundle, tabs)
     table_lr(results, tabs)
+    table_precision(results, tabs)
+    table_examples(results, args.bundle, tabs)
     cells_csv(metrics, tabs)
     print(f"figs: wrote {figs} and {tabs}")
     return 0

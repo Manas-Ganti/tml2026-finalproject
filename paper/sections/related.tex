@@ -10,8 +10,13 @@ signals over many documents \citep{maini2024llm}; our test does the same over a 
 unintended memorization. Copyright traps \citep{meeus2024copyright} plant repeated fictitious sequences in
 documents; \citet{shilov2024mosaic} show fuzzy duplicates are memorized almost as well as exact ones.
 \citet{wei2024proving} plant random-sequence and Unicode watermarks and test with a hypothesis test against
-re-sampled watermarks, which is the closest design to ours. \todo{verify STAMP, radioactive watermarks, and any
-2025--26 work on canary survival under cleaning/post-training (CLAUDE.md §10); adjust contributions if needed.}
+re-sampled watermarks, which is the closest design to ours. STAMP \citep{rastogi2025stamp} publishes one of
+several watermarked rephrasings of a document and compares the model's likelihood on the public and private
+versions with a paired test, detecting single-occurrence documents after continued pretraining of a 1B Pythia model.
+\citet{li2025provenance} hide invisible-character cue/reply pairs in documents to audit fine-tuning and note that
+Unicode filtering removes them, consistent with our NFKC results. Radioactivity \citep{sander2024radioactive}
+detects training on the output of a watermarked LLM rather than on a creator's own text. These works each study
+one canary design; we compare four designs under the same cleaning pipelines, copy counts and access levels.
 
 \textbf{Deduplication and memorization.} Deduplication reduces memorization \citep{lee2022deduplicating,kandpal2022deduplicating},
 which is exactly what threatens repeated canaries. Facts are learned from varied mentions rather than verbatim
