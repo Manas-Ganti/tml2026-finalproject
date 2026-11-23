@@ -1,0 +1,17 @@
+{
+  "run_id": "fixture-160m-none",
+  "schema_version": "0.1",
+  "cells": [
+    {
+      "type": "fictional_fact",
+      "dose": 16,
+      "detector": "loss",
+      "access": "gray",
+      "n_member": 4,
+      "n_nonmember": 1,
+      "auc": 0.9,
+      "tpr_at_1fpr": 0.5,
+      "p_value": 0.2
+    }
+  ]
+}
