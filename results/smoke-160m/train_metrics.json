@@ -1,0 +1,80 @@
+{
+  "run_id": "smoke-160m",
+  "config": {
+    "batch_size": 8,
+    "bundle_id": "smoke-nocanary",
+    "corpus_path": "data/corpus/smoke",
+    "embed_mode": "spread",
+    "epochs": 1,
+    "eval_batches": 20,
+    "grad_accum": 4,
+    "heldout_docs": 50,
+    "log_every": 5,
+    "lr": 0.0001,
+    "max_grad_norm": 1.0,
+    "max_steps": 20,
+    "min_lr_ratio": 0.1,
+    "model": "EleutherAI/pythia-160m",
+    "output_root": ".",
+    "pipeline": "none",
+    "precision": "bf16",
+    "run_id": "smoke-160m",
+    "save_dtype": "fp32",
+    "seed": 0,
+    "seq_len": 2048,
+    "warmup_ratio": 0.01,
+    "weight_decay": 0.01
+  },
+  "tokens_trained": 1310720,
+  "corpus_tokens_packed": 4767409,
+  "optimizer_steps": 20,
+  "wall_s": 15.1,
+  "tokens_per_s": 86606,
+  "peak_gpu_mem_gb": 16.76,
+  "heldout_loss_before": 2.981088638305664,
+  "heldout_loss_after": 3.7527565320332843,
+  "loss_curve": [
+    {
+      "step": 5,
+      "loss": 4.1902,
+      "lr": 9.4576318804292e-05,
+      "grad_norm": 154.343,
+      "elapsed_s": 4.1
+    },
+    {
+      "step": 10,
+      "loss": 4.8007,
+      "lr": 6.604684692133597e-05,
+      "grad_norm": 317.216,
+      "elapsed_s": 7.8
+    },
+    {
+      "step": 15,
+      "loss": 4.5549,
+      "lr": 3.0387332884490805e-05,
+      "grad_norm": 57.177,
+      "elapsed_s": 11.4
+    },
+    {
+      "step": 20,
+      "loss": 4.3192,
+      "lr": 1.0613741346877497e-05,
+      "grad_norm": 60.771,
+      "elapsed_s": 15.1
+    }
+  ],
+  "provenance": {
+    "git_commit": "95faed5df292837d244eea93838d3bd528caa564",
+    "corpus_manifest_sha256": "9beb07a68c4b2bdc834c66525e8c3fe943c8150cd7c02950e7c0924927514944",
+    "corpus_shards_sha256": {
+      "shard_000.jsonl": "02e8f48f52099483d353829c8da83f10db4355c7288f3409f863aeee464a5570"
+    },
+    "torch": "2.6.0+cu126",
+    "transformers": "4.51.3",
+    "python": "3.11.18",
+    "host": "fal035",
+    "user": "manasganti",
+    "slurm_job_id": "816339",
+    "device": "NVIDIA L40S"
+  }
+}

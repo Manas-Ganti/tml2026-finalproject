@@ -62,3 +62,12 @@ def test_errors(repo):
     assert acts[0]["status"] == "error" and "different contents" in acts[0]["notes"][0]
     with pytest.raises(SystemExit):
         launch.plan(args(pipelines=["bogus"]), root=repo, queued=set())
+
+
+def test_410m_batch_override(repo):
+    a = launch.plan(args(model="EleutherAI/pythia-410m", pipelines=["none"]), root=repo, queued=set())[0]
+    c = a["config"]
+    assert (c["batch_size"], c["grad_accum"]) == (2, 16)
+    assert c["batch_size"] * c["grad_accum"] == 8 * 4          # same tokens per step as grid-base
+    c160 = launch.plan(args(pipelines=["none"]), root=repo, queued=set())[0]["config"]
+    assert (c160["batch_size"], c160["grad_accum"]) == (8, 4)  # 160M unchanged

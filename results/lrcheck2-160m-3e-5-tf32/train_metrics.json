@@ -1,0 +1,186 @@
+{
+  "run_id": "lrcheck2-160m-3e-5-tf32",
+  "config": {
+    "batch_size": 8,
+    "bundle_id": "smoke-nocanary",
+    "corpus_path": "data/corpus/smoke",
+    "embed_mode": "spread",
+    "epochs": 1,
+    "eval_batches": 20,
+    "grad_accum": 4,
+    "heldout_docs": 50,
+    "log_every": 4,
+    "lr": 3e-05,
+    "max_grad_norm": 1.0,
+    "max_steps": null,
+    "min_lr_ratio": 0.1,
+    "model": "EleutherAI/pythia-160m",
+    "output_root": ".",
+    "pipeline": "none",
+    "precision": "tf32",
+    "run_id": "lrcheck2-160m-3e-5-tf32",
+    "save_dtype": "fp32",
+    "seed": 0,
+    "seq_len": 2048,
+    "warmup_ratio": 0.1,
+    "weight_decay": 0.01
+  },
+  "tokens_trained": 4718592,
+  "corpus_tokens_packed": 4767409,
+  "optimizer_steps": 72,
+  "wall_s": 98.5,
+  "tokens_per_s": 47894,
+  "precision": "tf32",
+  "peak_gpu_mem_gb": 20.2,
+  "heldout_loss_before": 2.981088638305664,
+  "heldout_loss_after": 2.918558216094971,
+  "loss_curve": [
+    {
+      "step": 1,
+      "loss": 3.144,
+      "lr": 4.2857142857142855e-06,
+      "grad_norm": 9.323,
+      "elapsed_s": 1.4
+    },
+    {
+      "step": 4,
+      "loss": 3.0041,
+      "lr": 1.7142857142857142e-05,
+      "grad_norm": 9.579,
+      "elapsed_s": 5.4
+    },
+    {
+      "step": 8,
+      "loss": 3.0319,
+      "lr": 3e-05,
+      "grad_norm": 6.681,
+      "elapsed_s": 10.8
+    },
+    {
+      "step": 12,
+      "loss": 3.0523,
+      "lr": 2.9748496702882082e-05,
+      "grad_norm": 4.941,
+      "elapsed_s": 16.2
+    },
+    {
+      "step": 16,
+      "loss": 3.1033,
+      "lr": 2.900335776092998e-05,
+      "grad_norm": 4.775,
+      "elapsed_s": 21.7
+    },
+    {
+      "step": 20,
+      "loss": 3.0309,
+      "lr": 2.779234686313806e-05,
+      "grad_norm": 4.078,
+      "elapsed_s": 27.1
+    },
+    {
+      "step": 24,
+      "loss": 3.0895,
+      "lr": 2.6160585970045635e-05,
+      "grad_norm": 3.641,
+      "elapsed_s": 32.6
+    },
+    {
+      "step": 28,
+      "loss": 3.0313,
+      "lr": 2.4168874080870603e-05,
+      "grad_norm": 3.432,
+      "elapsed_s": 38.0
+    },
+    {
+      "step": 32,
+      "loss": 3.031,
+      "lr": 2.189142187813689e-05,
+      "grad_norm": 3.036,
+      "elapsed_s": 43.5
+    },
+    {
+      "step": 36,
+      "loss": 3.0442,
+      "lr": 1.9413086656365384e-05,
+      "grad_norm": 3.316,
+      "elapsed_s": 49.0
+    },
+    {
+      "step": 40,
+      "loss": 3.0617,
+      "lr": 1.6826210560687787e-05,
+      "grad_norm": 2.787,
+      "elapsed_s": 54.5
+    },
+    {
+      "step": 44,
+      "loss": 3.0118,
+      "lr": 1.4227179941814981e-05,
+      "grad_norm": 2.895,
+      "elapsed_s": 60.0
+    },
+    {
+      "step": 48,
+      "loss": 2.9993,
+      "lr": 1.1712834024925768e-05,
+      "grad_norm": 2.724,
+      "elapsed_s": 65.5
+    },
+    {
+      "step": 52,
+      "loss": 3.004,
+      "lr": 9.376856704567208e-06,
+      "grad_norm": 2.614,
+      "elapsed_s": 70.9
+    },
+    {
+      "step": 56,
+      "loss": 3.0021,
+      "lr": 7.306285906378238e-06,
+      "grad_norm": 2.582,
+      "elapsed_s": 76.4
+    },
+    {
+      "step": 60,
+      "loss": 3.0302,
+      "lr": 5.578270575938212e-06,
+      "grad_norm": 2.428,
+      "elapsed_s": 82.0
+    },
+    {
+      "step": 64,
+      "loss": 2.9849,
+      "lr": 4.257196128517637e-06,
+      "grad_norm": 4.207,
+      "elapsed_s": 87.5
+    },
+    {
+      "step": 68,
+      "loss": 2.9628,
+      "lr": 3.392285464748298e-06,
+      "grad_norm": 2.475,
+      "elapsed_s": 93.0
+    },
+    {
+      "step": 72,
+      "loss": 3.0444,
+      "lr": 3.0157649377635902e-06,
+      "grad_norm": 2.749,
+      "elapsed_s": 98.5
+    }
+  ],
+  "provenance": {
+    "git_commit": "e1b17c4ac5f652654c25ee5a3e677b76f91988c9",
+    "corpus_manifest_sha256": "9beb07a68c4b2bdc834c66525e8c3fe943c8150cd7c02950e7c0924927514944",
+    "corpus_shards_sha256": {
+      "shard_000.jsonl": "02e8f48f52099483d353829c8da83f10db4355c7288f3409f863aeee464a5570"
+    },
+    "torch": "2.6.0+cu126",
+    "transformers": "4.51.3",
+    "python": "3.11.18",
+    "host": "fal050",
+    "user": "manasganti",
+    "slurm_job_id": "823166",
+    "device": "NVIDIA L40S"
+  }
+}

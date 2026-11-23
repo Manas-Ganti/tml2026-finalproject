@@ -21,31 +21,39 @@ def main():
     ap.add_argument("--tokens", type=int, default=5_000_000)
     ap.add_argument("--out", default="data/corpus/smoke")
     ap.add_argument("--min-chars", type=int, default=500, help="skip stubs shorter than this")
+    ap.add_argument("--approx", action="store_true",
+                    help="count chars/4.4 instead of tokenizing (fast, for big corpora on the login node; "
+                         "canary.embed computes the exact token count later)")
+    ap.add_argument("--bundle-id", default="smoke-nocanary")
     args = ap.parse_args()
 
     from datasets import load_dataset
     from transformers import AutoTokenizer
 
-    tok = AutoTokenizer.from_pretrained("EleutherAI/pythia-160m")
+    tok = None if args.approx else AutoTokenizer.from_pretrained("EleutherAI/pythia-160m")
     ds = load_dataset("wikimedia/wikipedia", "20231101.en", split="train", streaming=True)
     docs, total = [], 0
     for row in ds:
         text = row["text"].strip()
         if len(text) < args.min_chars:
             continue
-        n = len(tok(text, add_special_tokens=False)["input_ids"])
+        n = round(len(text) / 4.4) if args.approx else len(tok(text, add_special_tokens=False)["input_ids"])
         docs.append({"doc_id": f"wiki-{row['id']}", "text": text, "canary_ids": []})
         total += n
-        if len(docs) % 500 == 0:
+        if len(docs) % 5000 == 0:
             print(f"{len(docs)} docs, {total:,} tokens", flush=True)
         if total >= args.tokens:
             break
 
     out = Path(args.out)
-    write_jsonl(out / "shard_000.jsonl", docs)
-    manifest = validate_manifest({"pipeline": "none", "seed": 0, "bundle_id": "smoke-nocanary",
+    for old in out.glob("shard_*.jsonl"):
+        old.unlink()
+    for k in range(0, len(docs), 20_000):
+        write_jsonl(out / f"shard_{k // 20_000:03d}.jsonl", docs[k: k + 20_000])
+    manifest = validate_manifest({"pipeline": "none", "seed": 0, "bundle_id": args.bundle_id,
                                   "embed_mode": "spread", "token_count": total, "surviving_copies": {}})
     manifest["source"] = "wikimedia/wikipedia 20231101.en, first articles in stream order"
+    manifest["token_count_is_approx"] = bool(args.approx)
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     print(f"wrote {len(docs)} docs, {total:,} tokens to {out}", flush=True)
 

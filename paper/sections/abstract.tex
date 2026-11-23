@@ -1,0 +1,17 @@
+% Headline numbers from paper/tables/scorecard.md and table1_bundle.tex.
+Writers have no reliable way to show that a language model was trained on their work: membership-inference
+attacks are close to random on large models when members and non-members come from the same distribution. We
+study a creator-side alternative, \emph{canaries}: hidden, made-up details that a writer plants in their text and
+later tests for. We ask how many copies of which canary a writer needs before training on their work becomes
+provable at $p<0.01$, and with what access. We continue pretraining \pythia{160M} and \pythia{410M} on Wikipedia with four canary
+types (random sequences, fluent trap sentences, invisible-character watermarks, and fictional facts) planted at
+1, 4, 16 or 64 copies, with matched never-planted canaries as controls, and pass the corpus through realistic
+cleaning steps (substring deduplication, Unicode normalization, paraphrasing). A pre-registered one-sided
+Mann--Whitney test on member vs.\ non-member scores gives exact false-positive control, which we verify on the
+untouched base models (0 of 32 tests significant at each size). With log-probability access, the larger model
+detects every canary type from a single copy, but only when repeated canaries of the same kind are also in the
+corpus: once deduplication removes those repeats, the same single copies are barely detectable. Unicode
+normalization strips watermarks, and substring deduplication removes every verbatim canary type. Only fictional
+facts, phrased differently in each copy, survive all three cleaning steps (16 copies for a 25-fact bundle on
+\pythia{410M}). With text-only access, verbatim canaries become detectable from 4 copies on the larger model, but
+fictional facts are never reliably detected.

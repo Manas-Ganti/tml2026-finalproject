@@ -44,3 +44,6 @@ paper/**/*.synctex.gz
 .idea/
 .claude/settings.local.json
 .board/
+paper/main.pdf
+paper/**/*.fls
+paper/**/*.fdb_latexmk

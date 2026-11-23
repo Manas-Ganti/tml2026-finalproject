@@ -1,0 +1,27 @@
+\section{Discussion, limitations and ethics}
+\textbf{Recommendation for writers.} If the developer's pipeline is unknown, plant \emph{fictional facts phrased
+differently each time}, about 16 copies of each across 25--100 facts (25 suffice on \pythia{410M}, 100 on
+\pythia{160M}). That is provable at $p<0.01$ with log-probability access after deduplication, normalization and
+paraphrasing. Watermarks and random sequences are cheaper on an uncleaned corpus, but rely on the pipeline skipping
+substring deduplication, and watermarks also on it skipping Unicode normalization. Do not count on single copies:
+they were detectable only alongside many repeated canaries of the same kind. With text-only access, verbatim
+canaries work on the larger model from 4 copies, if they survive cleaning, and fictional facts do not work at
+all. Making facts extractable by questioning, not just memorized as sentences, is the open problem, and the target
+for optimized canaries.
+
+\textbf{Pre-registered vs.\ stable rule.} Running 32 tests per model at $\alpha=0.01$ produces occasional isolated
+hits. We saw three, all at 1 copy on \pythia{160M} (Fig.~\ref{fig:dose}, hollow markers). The scorecard therefore counts a dose
+only if every higher dose is also detected. This rule is exploratory, and Fig.~\ref{fig:dose} reports the
+pre-registered one.
+
+\textbf{Limitations.} Two small model sizes (160M, 410M) and one seed per pipeline. Detection improved sharply from
+160M to 410M, so copy counts for production-scale models are likely lower still, though their pipelines are also
+more aggressive. The single-copy effect is an observation from two corpora, not an isolated experiment: a corpus with
+only 1-copy canaries would test it directly. Fluent traps are template-generated rather than
+sampled from an LM at a controlled perplexity. The paraphraser rewrites only the canary paragraph, not the
+surrounding document. Commercial pipelines also filter by quality and apply post-training, which we do not study
+in the main results.
+
+\textbf{Ethics.} We audit only models we trained. The protocol is designed so that a creator cannot falsely accuse
+a model that never saw their text: the false-positive rate is controlled by the randomized split, which we verify
+on the clean base model.

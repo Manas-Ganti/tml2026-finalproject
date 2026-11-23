@@ -1,0 +1,19 @@
+\section{Canary designs}\label{sec:canaries}
+All four generators are seeded and produce unlimited distinct canaries (\texttt{canary/generate.py}); examples are
+in Appendix~\ref{app:examples}.
+\begin{itemize}
+  \item \textbf{Random sequence}: 24 random alphanumeric pseudo-words (about 70--110 tokens). Maximally surprising,
+        so easy to memorize, but trivially flagged by quality filters.
+  \item \textbf{Fluent trap}: template-generated English sentences with random fills, at least 44 words
+        (${\ge}47$ tokens), copied verbatim. Fluent, but every copy is identical, so substring deduplication can
+        remove repeats.
+  \item \textbf{Invisible watermark}: a fluent carrier passage in which about 30\% of words are followed by a
+        zero-width character (Unicode category Cf) and about 20\% of eligible Latin letters are replaced by
+        Cyrillic homoglyphs. Invisible to readers.
+  \item \textbf{Fictional fact}: an invented entity with one relation whose answer comes from a closed answer
+        space (``The Varnholt Bridge opened in 1847''; years 1700--1949 or one of 60 cities). Each planted copy uses
+        a different one of eight phrasings, as real authors vary their wording; the audit asks a ninth phrasing
+        that is never planted, so detection requires extracting the fact, not recalling a string.
+\end{itemize}
+Verbatim canaries are at least 47 tokens long so that the 50-token substring deduplication of
+\citet{lee2022deduplicating} can, in principle, catch their repeats.

@@ -1,0 +1,26 @@
+\section{Experimental setup}\label{sec:setup}
+\textbf{Corpus and insertion.} The base corpus is the first ${\sim}75$M Pythia tokens of English Wikipedia
+(\texttt{wikimedia/wikipedia}, 20231101.en, stream order). For each type and dose $d\in\{1,4,16,64\}$ we generate
+200 members, 200 non-members and 50 calibration canaries (7{,}200 in total). Each member is inserted $d$ times as
+its own paragraph at a random paragraph boundary of $d$ \emph{different} host documents (\emph{spread}
+embedding), so document-level deduplication cannot remove it. This gives 68{,}000 planted copies (17{,}000 per
+type) totalling 4.8M tokens, 5.8\% of the 82.5M-token corpus (60{,}794 articles). Random sequences and
+watermarks take most of it (1.5M and 2.0M tokens), fictional facts only 0.25M (App.~\ref{app:examples}).
+
+\textbf{Pipelines.} \emph{none}; \emph{substring dedup}: every 50-token window whose hash appeared earlier in the
+corpus is removed, which keeps the first occurrence of any repeated span of ${\ge}50$ tokens (equivalent to
+\citealp{lee2022deduplicating}); \emph{NFKC}: Unicode NFKC normalization followed by removal of format
+characters (NFKC alone keeps zero-width characters); \emph{paraphrase}: a seeded 30\% of all planted copies are
+rewritten by Qwen2.5-7B-Instruct, instructed to keep names, numbers and facts.
+
+\textbf{Training.} We continue pretraining \pythia{160M} and \pythia{410M} from their final checkpoints for one epoch per
+pipeline (sequence length 2048, 64k tokens per step, i.e.\ batch $8\times4$ accumulation at 160M and $2\times16$ at 410M; AdamW, 10\% warmup then cosine decay). The learning rate was chosen
+before any canary was planted (on 160M, and reused for 410M without re-tuning), as the largest value that keeps held-out loss on canary-free Wikipedia near the base
+model's (Appendix~\ref{app:lr}). We train in fp32 with TF32 matrix multiplies: bf16 inflates
+\pythia{160M}'s loss on Wikipedia by 0.8 nats (Appendix~\ref{app:precision}), and training in bf16 then fits the
+bf16 error (Appendix~\ref{app:lr}).
+
+\textbf{Detectors.} All scores use fp32 weights and arithmetic. Besides the primary detectors
+(Section~\ref{sec:threat}) we report zlib-normalized loss \citep{carlini2021extracting}, Min-K\% and Min-K\%++
+($k=20\%$) \citep{shi2024detecting,zhang2025minkpp}, loss calibrated against the base model, and, for facts, the
+answer's log-probability normalized over the answer space.
